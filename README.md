@@ -11,5 +11,10 @@ micromamba create -f /path/to/fraser1.yml
 micromamba create -f /path/to/fraser2.yml
 ```
 
+The yml files can be found at:
+```
+FRASER_snakemake/conda_envs
+```
+
 ## Projects
 This folder contains the code for various images I have created for presentations and posters. 
