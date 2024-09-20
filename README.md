@@ -6,7 +6,6 @@ More details coming soon.
 
 ### Installation
 Please install the conda environments with:
-
 ```
 micromamba create -f /path/to/fraser1.yml
 micromamba create -f /path/to/fraser2.yml
