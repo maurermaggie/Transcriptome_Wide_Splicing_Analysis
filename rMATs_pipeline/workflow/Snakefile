@@ -1,0 +1,60 @@
+import os 
+import sys
+import pandas as pd
+
+###################################---Step 1: Define all Config Variables---######################################################
+output_directory=config["output_directory"]
+data_directory=config["data_directory"]
+gtf_file=config["gtf_file"]
+file_list=config["file_list"]
+
+#########################################---Step 1: Define Wildcard---############################################################
+samples_dataframe = pd.read_csv(file_list, sep=",", comment="#").set_index("ID")
+print(samples_dataframe)
+IDs = samples_dataframe.index
+
+def get_file_path(wc):
+    return samples_dataframe.loc[wc.ID, "File_path"]
+
+rule all:
+    input:
+        expand(config["data_directory"] + "/" + "{ID}" + "/" + "{ID}" + ".txt", ID = IDs),
+        expand(config["output_directory"] + "/" + "{ID}" + "/summary.txt", ID = IDs)
+
+
+###########################################---Step 2: Define Rules--##############################################################
+rule make_txt_files:
+    input:
+        file_path=ancient(get_file_path)
+    params:
+        data_directory=config["data_directory"] + "/" + "{ID}"
+    output:
+        output_file=config["data_directory"] + "/" + "{ID}" + "/" + "{ID}" + ".txt",
+    resources:
+        time="12:00:00",
+        mem="236GB"
+    shell:"""
+        mkdir -p {params.data_directory}
+        Rscript scripts/make_txt_files.r {input.file_path} {params.data_directory}
+        ls {output.output_file}
+        echo "rule done"
+        """
+
+rule run_rMATs:
+    input:
+        file=config["data_directory"] + "/" + "{ID}" + "/" + "{ID}" + ".txt"
+    params:
+        gtf_file=config["gtf_file"],
+        output_directory=config["output_directory"] + "/" + "{ID}",
+        tmp_directory=config["output_directory"] + "/" + "{ID}" + "/tmp",
+    output:
+        output_file=(config["output_directory"] + "/" + "{ID}" + "/summary.txt")
+    conda:
+        'rmats_turbo'
+    shell:"""
+        mkdir -p {params.output_directory}
+        rmats --b1 {input.file} --gtf {params.gtf_file} -t paired --readLength 150 --nthread 400 --od {params.output_directory} --tmp {params.tmp_directory}
+    
+        #ls {output.output_file}
+        echo "rule done"
+        """
