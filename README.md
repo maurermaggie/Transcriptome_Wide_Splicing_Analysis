@@ -15,6 +15,30 @@ The yml files can be found at:
 ```
 FRASER_snakemake/conda_envs
 ```
+### Making file list
+-Make a csv with a list of all of the full filepaths of the files you want to be included in your FRASER run. 
+
+-For an example, see symlink_blood.csv in the FRASER_snakemake/config directory
+
+### Setting up configurations
+-Make a config.yaml file in the config folder with the following information
+```
+output_directory: "/file/path/to/output/directory"
+metadata_file: "file/path/to/metadata/file"
+data_type: "Tissue Type"
+mig_file: "/file/path/to/Homo_sapiens_gene.csv"
+input_directory: "/file/path/where/you/want/to/symlink/data/to"
+file_list: "csv/file/where/you/have/list/of/files/to/run.csv"
+```
+### Running FRASER
+-Go to the FRASER_snakemake/workflow directory
+
+-run the following command:
+```
+./run_snakemake --config_file "/path/to/config/yaml" --profile "path/to/config/slurm_scg"
+```
+
+The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
 
 ## Paper
 This folder contains the code and images for the figures of my upcoming manuscript. 
