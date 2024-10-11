@@ -31,11 +31,26 @@ Contains the data for the geneset enrichment analysis in the "Gene Information" 
 ### Figure 2
 Contains the code for:
 -Figure 2A: By both gene and junction, geom_point plots of the excess outliers from the different FRASER and FRASER2 metrics
+
 -Figure 2B: PCA plot (removed from analysis)
+
 -Figure 2C (now B): Metadata QC plots (Age, Batch, RIN, Sex) as well as Variance Explained. 
 
-Contains the stats for:
--Stats for the 
+### Figure 3
+Contains the code for:
+-Figure 3A: Geom_point showing the separation of the RNU4ATAC samples from the rest of the cohort 
+
+-Figure 3B: Boxplot of the number of genes impacted by the theta events in the RNU4ATAC samples compared to the rest of the cohort
+
+### Figure 4
+Contains the code for:
+-Figure 4A: Geom_point showing the separation of the RNU4ATAC and RNU6ATAC samples from the rest of the cohort 
+
+-Figure 4B: Boxplot of the number of genes impacted by the theta events in the RNU4ATAC and RNU6ATAC samples compared to the rest of the cohort
+
+### Figure 5
+Contains the code for:
+-Plots showing the impact of sample size on the number of excess MIGs splicing efficiency outliers. 
 
 ## ASHG_Poster
 This folder contains the code for the poster I am making at ASHG.
