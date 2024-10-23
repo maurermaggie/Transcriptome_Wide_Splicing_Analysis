@@ -1,0 +1,8 @@
+output_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER_snakemake/output/FRASER2_RD112_try3"
+metadata_file: "/oak/stanford/groups/smontgom/shared/UDN/FRASER_analysis/files/2017to2022_metadata.tsv"
+bam_file_directory: ""
+data_type: "Blood"
+mig_file: "/oak/stanford/groups/smontgom/shared/UDN/ReferenceFiles/Minor_Intron_Database/Homo_sapiens_gene.csv"
+input_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER_snakemake/data/FRASER2_RD112_try3"
+file_list:  "/oak/stanford/groups/smontgom/shared/UDN/Analysis/FRASER/pipelines/FRASER_snakemake/config/symlink_blood.csv"
+FRASER_type: "FRASER2"
