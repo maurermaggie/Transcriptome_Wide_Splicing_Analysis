@@ -43,3 +43,7 @@ The files in the slurm_scg directory will allow the snakemake to be run with res
 ## run_results_paper
 This folder contains the code and images for the main figures of my manuscript. 
 
+## Gene Information
+Contains the genesets used in the manuscript
+
+
