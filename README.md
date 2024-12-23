@@ -40,6 +40,6 @@ file_list: "csv/file/where/you/have/list/of/files/to/run.csv"
 
 The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
 
-## Paper
-This folder contains the code and images for the figures of my manuscript. 
+## run_results_paper
+This folder contains the code and images for the main figures of my manuscript. 
 
