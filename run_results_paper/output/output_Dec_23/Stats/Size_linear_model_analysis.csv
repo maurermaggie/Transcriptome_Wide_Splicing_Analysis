@@ -1,0 +1,19 @@
+
+Call:
+lm(formula = sample_size ~ number_MIGs_theta, data = number_MIGs_with_IR)
+
+Residuals:
+       1        2        3        4        5        6        7 
+  69.192 -107.091  -92.404  -47.701   -1.232   47.564  131.673 
+
+Coefficients:
+                   Estimate Std. Error t value Pr(>|t|)  
+(Intercept)       -340.8194   199.4792  -1.709   0.1482  
+number_MIGs_theta    1.7656     0.6713   2.630   0.0465 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 96.61 on 5 degrees of freedom
+Multiple R-squared:  0.5805,	Adjusted R-squared:  0.4966 
+F-statistic: 6.918 on 1 and 5 DF,  p-value: 0.04652
+
