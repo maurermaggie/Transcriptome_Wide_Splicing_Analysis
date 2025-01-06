@@ -55,7 +55,7 @@ Sources of the gene sets:
 | :---: | :---: |
 | Haploinsufficient | ClinGen dataset (Cormier et al., 2021) | 
 | Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | 
-| Autosomal dominant  Blekhman et al., 2008; Berg et al., 2013 | 
+| Autosomal dominant | Blekhman et al., 2008; Berg et al., 2013 | 
 | Olfactory receptor | Mainland, et al., 2015 |
 | CRISPR non-essential | Hart et al., 2017 | 
 | Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz > Firth et al., 2011;  Fitzgerald, et al., 2015; Wright et al., 2015; McRae, et al., 2017; Wright, et al., 2018 | 
