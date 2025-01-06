@@ -41,7 +41,10 @@ file_list: "csv/file/where/you/have/list/of/files/to/run.csv"
 The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
 
 ## run_results_paper
-This folder contains the code and images for the main and supplemental figures of my manuscript. 
+This folder contains the code for the main and supplemental figures of my manuscript (except Figure 1). 
+
+## misc_scripts
+This folder contains the code for Figure 1, the creation of the metadata file, and a comparison of novel samples vs samples in Ungar et al., 2024 (PMID: PMC10802764).
 
 ## Gene Information
 Contains the genesets used in the manuscript. They were originally from Cormier, et al., 2022 (PMID: 36376793) and can also be found at https://github.com/macarthur-lab/gene_lists
