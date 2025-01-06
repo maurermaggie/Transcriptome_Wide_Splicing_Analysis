@@ -1,6 +1,6 @@
 # Transcriptome_Wide_Splicing_Analysis
 
-## FRASER_Snakemake
+## FRASER_snakemake
 This folder contains my Snakemake pipeline for running FRASER (and not FRASER2 at the moment).
 More details coming soon.
 
