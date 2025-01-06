@@ -44,6 +44,6 @@ The files in the slurm_scg directory will allow the snakemake to be run with res
 This folder contains the code and images for the main figures of my manuscript. 
 
 ## Gene Information
-Contains the genesets used in the manuscript
+Contains the genesets used in the manuscript. They were originally from Cormier, et al., 2022 (PMID: 36376793) and can also be found at https://github.com/macarthur-lab/gene_lists
 
 
