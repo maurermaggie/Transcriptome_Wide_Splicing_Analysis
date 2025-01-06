@@ -51,13 +51,13 @@ Contains the gene sets used in the manuscript. They were originally from Cormier
 
 Sources of the gene sets:
 
-| Gene set | Description | URL Source | Source |
-| :---: | :---: | :---: | :---: 
-| Haploinsufficient | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/haploinsufficient.tsv | ClinGen dataset (Cormier et al., 20212) | 
-| Autosomal recessive | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/autosomal_recessive.tsv | Blekhman et al., 20083; Berg et al., 20134 | 
-| Autosomal dominant | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/autosomal_dominant.tsv | Blekhman et al., 20083; Berg et al., 20134 | 
-| Olfactory receptor | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/olfactory_receptors.tsv | Mainland, et al., 20155 |
-| CRISPR non-essential | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/CRISPR_nonessential_genes.tsv | Hart et al., 20176 | 
-| Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz | Firth et al., 20117;  Fitzgerald, et al., 20158; Wright et al., 20159; McRae, et al., 201710; Wright, et al., 201811 | 
-| OMIM | https://omim.org/downloads/ | OMIM dataset (Amberger et al., 201912) |
+| Gene set | Description | Source |
+| :---: | :---: | :---: |
+| Haploinsufficient | ClinGen dataset (Cormier et al., 2021) | 
+| Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | 
+| Autosomal dominant  Blekhman et al., 2008; Berg et al., 2013 | 
+| Olfactory receptor | Mainland, et al., 2015 |
+| CRISPR non-essential | Hart et al., 2017 | 
+| Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz > Firth et al., 2011;  Fitzgerald, et al., 2015; Wright et al., 2015; McRae, et al., 2017; Wright, et al., 2018 | 
+| OMIM | https://omim.org/downloads > Amberger et al., 2019 |
 
