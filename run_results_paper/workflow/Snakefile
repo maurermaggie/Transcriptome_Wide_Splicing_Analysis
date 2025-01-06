@@ -1,0 +1,348 @@
+import os 
+import sys
+import pandas as pd
+
+###################################---Step 1: Define all Config Variables---######################################################
+FRASER1_results_uncompiled: config["FRASER1_results_uncompiled"]
+FRASER2_results_uncompiled: config["FRASER2_results_uncompiled"]
+metadata_file: config["metadata_file"]
+input_file_FRASER: config["input_file_FRASER"]
+input_file_FRASER2: config["input_file_FRASER2"]
+mig_file: config["mig_file"]
+output_directory: config["output_directory"]
+low_RIN: config["low_RIN"]
+genesets: config["genesets"]
+genes: config["genes"]
+genes_FRASER2: config["genes_FRASER2"]
+missing: config["missing"]
+size_run_dir: config["size_run_dir"]
+
+###########################################---Step 2: Define Rules--##############################################################
+rule all:
+    input:
+        config["output_directory"] + "/DataFrames/counts.csv",
+        config["output_directory"] + "/DataFrames/outliers.csv",
+        config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv",
+        config["output_directory"] + "/Plots/Figure2/figure2b.pdf",
+        config["output_directory"] + "/Stats/figure2b.csv",
+        config["output_directory"] + "/Plots/Figure3/figure3a_FRASER.pdf",
+        config["output_directory"] + "/Stats/figure3a_FRASER.csv",
+        config["output_directory"] + "/Plots/Figure3/figure3b_FRASER2.pdf",
+        config["output_directory"] + "/Stats/figure3b_FRASER2.csv",
+        config["output_directory"] + "/Plots/Figure4/figure4c_theta.pdf",
+        config["output_directory"] + "/Plots/Figure4/figure4a_psi3.pdf",
+        config["output_directory"] + "/Plots/Figure4/figure4b_psi5.pdf",
+        config["output_directory"] + "/Plots/Figure4/figure4d_jaccard.pdf",
+        config["output_directory"] + "/Stats/figure4.csv",
+        config["output_directory"] + "/Plots/Supplemental/metrics_venn_diagram.pdf",
+        config["output_directory"] + "/Plots/Supplemental/metrics_upset.pdf",
+        config["output_directory"] + "/Plots/Figure5/goem_point_RNU4ATAC.pdf",
+        config["output_directory"] + "/Stats/number_theta_in_MIGs_outliers.csv",
+        config["output_directory"] + "/Stats/RNU4ATAC_vs_non_stats.csv",
+        config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot.pdf",
+        config["output_directory"] + "/Stats/number_MIGs_with_theta_outliers.csv",
+        config["output_directory"] + "/Stats/RNU4ATAC_vs_non_stats_MIG_count.csv",
+        config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_psi3.pdf",
+        config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_psi5.pdf",
+        config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_jaccard.pdf",
+        config["output_directory"] + "/Stats/MIGs_stats.csv",
+        config["output_directory"] + "/Plots/Figure6a/venn_diagram_RNU6ATAC_RNU4ATAC.pdf",
+        config["output_directory"] + "/Plots/FigureS1/upset_plot_outlier_status.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/figureS2a_variance_explained_linear.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_violin.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_v_RIN.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_boxplot.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/sex.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/age.pdf",
+        config["output_directory"] + "/Plots/FigureS2a/Covariates/RIN.pdf",
+        config["output_directory"] + "/Stats/jaccard_05_lm.csv",
+        config["output_directory"] + "/Stats/theta_05_lm.csv",
+        config["output_directory"] + "/Stats/psi5_05_lm.csv",
+        config["output_directory"] + "/Stats/psi3_05_lm.csv",
+        config["output_directory"] + "/Stats/all_05_lm.csv",
+        config["output_directory"] + "/Stats/all_05_glm.csv",
+        config["output_directory"] + "/Stats/psi3_05_glm.csv",
+        config["output_directory"] + "/Stats/psi5_05_glm.csv",
+        config["output_directory"] + "/Stats/theta_05_glm.csv",
+        config["output_directory"] + "/Stats/jaccard_05_glm.csv",
+        config["output_directory"] + "/Plots/FigureS2b/figureS2b_variance_explained_logistic.pdf",
+        config["output_directory"] + "/Plots/FigureS3/upset_plot_RNU4ATAC_genes.pdf",
+        config["output_directory"] + "/Stats/RNU4ATAC_gene_comparison.csv",
+        config["output_directory"] + "/Stats/RNU4ATAC_RNU6ATAC_gene_comparison.csv",
+        config["output_directory"] + "/Plots/FigureS4/gradient_plot.pdf",
+        config["output_directory"] + "/Stats/Size_linear_model_analysis.csv",
+        config["output_directory"] + "/Stats/Size_zscore_linear_model_analysis.csv",
+        config["output_directory"] + "/Plots/FigureS5/jaccard_geom_point.pdf"
+
+
+rule make_count_dataframe: 
+    input:
+        results_FRASER1 = config["FRASER1_results_uncompiled"]
+    params:
+        input_files_FRASER = config["input_file_FRASER"],
+        input_files_FRASER2 = config["input_file_FRASER2"],
+        low_RIN = config["low_RIN"],
+        migs = config["mig_file"],
+        results_FRASER2 = config["FRASER2_results_uncompiled"],
+        missing_meta = config["missing"]
+    output:
+        output_file = config["output_directory"] + "/DataFrames/counts.csv"
+    shell:"""
+        Rscript scripts/make_count_dataframes.r  {input.results_FRASER1} {params.input_files_FRASER} {params.input_files_FRASER2} {params.low_RIN} {params.migs} {params.results_FRASER2} {output.output_file} {params.missing_meta}
+
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule make_outlier_dataframe: 
+    input:
+        count_results = config["output_directory"] + "/DataFrames/counts.csv"
+    output:
+        output_file = config["output_directory"] + "/DataFrames/outliers.csv"
+    shell:"""
+        Rscript scripts/make_outlier_dataframe.r  {input.count_results} {output.output_file}
+
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule make_metadata_dataframe: 
+    input:
+        count_results = config["output_directory"] + "/DataFrames/counts.csv",
+        outlier_results = config["output_directory"] + "/DataFrames/outliers.csv"
+    params: 
+        metadata_file = config["metadata_file"]
+    output:
+        output_file = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+    shell:"""
+        Rscript scripts/join_metadata.r  {input.outlier_results} {input.count_results} {params.metadata_file} {output.output_file}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule figure_2b: 
+    input:
+        results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+    output:
+        output_file = config["output_directory"] + "/Plots/Figure2/figure2b.pdf",
+        output2 = config["output_directory"] + "/Stats/figure2b.csv"
+    shell:"""
+        Rscript scripts/Figure2b.r  {input.results} {output.output_file} {output.output2}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule figure_3a_FRASER: 
+    input:
+        results_uncompiled = config["FRASER1_results_uncompiled"]
+    params:
+        low_RIN = config["low_RIN"],
+        genes = config["genes"],
+        genesets = config["genesets"],
+        fraser = "FRASER"
+    output:
+        output_file = config["output_directory"] + "/Plots/Figure3/figure3a_FRASER.pdf",
+        output2 = config["output_directory"] + "/Stats/figure3a_FRASER.csv"
+    shell:"""
+        Rscript scripts/Figure3.r  {input.results_uncompiled} {params.genesets} {params.genes} {params.low_RIN} {output.output_file} {output.output2} {params.fraser}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule figure_3b_FRASER2: 
+    input:
+        results_uncompiled = config["FRASER2_results_uncompiled"]
+    params:
+        low_RIN = config["low_RIN"],
+        genes = config["genes_FRASER2"],
+        genesets = config["genesets"],
+        fraser = "FRASER2"
+    output:
+        output_file = config["output_directory"] + "/Plots/Figure3/figure3b_FRASER2.pdf",
+        output2 = config["output_directory"] + "/Stats/figure3b_FRASER2.csv"
+    conda:
+        'fraser2'
+    shell:"""
+        Rscript scripts/Figure3.r  {input.results_uncompiled} {params.genesets} {params.genes} {params.low_RIN} {output.output_file} {output.output2} {params.fraser}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_file}
+        """
+
+rule figure_4: 
+    input:
+        results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+    output:
+        output_file_theta = config["output_directory"] + "/Plots/Figure4/figure4c_theta.pdf",
+        output_file_psi3 = config["output_directory"] + "/Plots/Figure4/figure4a_psi3.pdf",
+        output_file_psi5 = config["output_directory"] + "/Plots/Figure4/figure4b_psi5.pdf",
+        output_file_jaccard = config["output_directory"] + "/Plots/Figure4/figure4d_jaccard.pdf",
+        output_stats = config["output_directory"] + "/Stats/figure4.csv",
+        output_venn = config["output_directory"] + "/Plots/Supplemental/metrics_venn_diagram.pdf",
+        output_upset = config["output_directory"] + "/Plots/Supplemental/metrics_upset.pdf"
+    shell:"""
+        Rscript scripts/Figure4.r  {input.results} {output.output_file_theta} {output.output_file_psi3} {output.output_file_psi5} {output.output_file_jaccard} {output.output_stats} {output.output_venn} {output.output_upset}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.output_upset}
+        """
+
+rule figure_5a: 
+    input:
+        results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+    output:
+        geom_point_RNU4ATAC = config["output_directory"] + "/Plots/Figure5/goem_point_RNU4ATAC.pdf",
+        number_theta_in_MIGs_outliers = config["output_directory"] + "/Stats/number_theta_in_MIGs_outliers.csv",
+        means = config["output_directory"] + "/Stats/RNU4ATAC_vs_non_stats.csv"
+    shell:"""
+        Rscript scripts/Figure5a.r  {input.results} {output.geom_point_RNU4ATAC} {output.number_theta_in_MIGs_outliers} {output.means}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.geom_point_RNU4ATAC}
+        """
+
+rule figure_5b: 
+    input:
+        results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+    output:
+        number_MIGs_affected_boxplot = config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot.pdf",
+        number_MIGs_with_theta = config["output_directory"] + "/Stats/number_MIGs_with_theta_outliers.csv",
+        means_number_MIGs_with_theta = config["output_directory"] + "/Stats/RNU4ATAC_vs_non_stats_MIG_count.csv",
+        number_MIGs_affected_boxplot_psi3 = config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_psi3.pdf",
+        number_MIGs_affected_boxplot_psi5 = config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_psi5.pdf",
+        number_MIGs_affected_boxplot_jaccard = config["output_directory"] + "/Plots/Figure5/number_MIGs_affected_boxplot_jaccard.pdf",
+        number_MIGs_stats = config["output_directory"] + "/Stats/MIGs_stats.csv"
+    shell:"""
+        Rscript scripts/Figure5b.r  {input.results} {output.number_MIGs_affected_boxplot} {output.number_MIGs_with_theta} {output.means_number_MIGs_with_theta} {output.number_MIGs_affected_boxplot_psi3} {output.number_MIGs_affected_boxplot_psi5} {output.number_MIGs_affected_boxplot_jaccard} {output.number_MIGs_stats}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.means_number_MIGs_with_theta}
+        """
+
+rule figure_6a: 
+    input:
+        results_FRASER1 = config["FRASER1_results_uncompiled"],
+        migs_df = config["mig_file"]
+    output:
+        venn_RNU6ATAC = config["output_directory"] + "/Plots/Figure6a/venn_diagram_RNU6ATAC_RNU4ATAC.pdf"
+    shell:"""
+        Rscript scripts/Figure6a.r {input.results_FRASER1} {input.migs_df} {output.venn_RNU6ATAC}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.venn_RNU6ATAC}
+        """
+
+rule figureS1: 
+        input:
+            results = config["output_directory"] + "/DataFrames/outliers.csv"
+        output:
+            upset_plot = config["output_directory"] + "/Plots/FigureS1/upset_plot_outlier_status.pdf",
+        shell:"""
+            Rscript scripts/FigureS1.r {input.results} {output.upset_plot}
+        
+            #Snakemake will error out if you do not do something with the output file in the rule. 
+            #To get around this, I ls the output file
+            ls {output.upset_plot}
+            """
+
+rule figureS2a_linear_regression: 
+        input:
+            results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+        output:
+            output_var_explained = config["output_directory"] + "/Plots/FigureS2a/figureS2a_variance_explained_linear.pdf",
+            batch_violin = config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_violin.pdf",
+            batch_v_RIN = config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_v_RIN.pdf",
+            batch = config["output_directory"] + "/Plots/FigureS2a/Covariates/batch_boxplot.pdf",
+            sex = config["output_directory"] + "/Plots/FigureS2a/Covariates/sex.pdf",
+            age = config["output_directory"] + "/Plots/FigureS2a/Covariates/age.pdf",
+            rin = config["output_directory"] + "/Plots/FigureS2a/Covariates/RIN.pdf",
+            jaccard_05_stats = config["output_directory"] + "/Stats/jaccard_05_lm.csv",
+            theta_05_stats = config["output_directory"] + "/Stats/theta_05_lm.csv",
+            psi5_05_stats = config["output_directory"] + "/Stats/psi5_05_lm.csv",
+            psi3_05_stats = config["output_directory"] + "/Stats/psi3_05_lm.csv",
+            all_05_stats = config["output_directory"] + "/Stats/all_05_lm.csv"
+        shell:"""
+            Rscript scripts/FigureS2a_linear_regression.r  {input.results} {output.all_05_stats} {output.psi3_05_stats} {output.psi5_05_stats} {output.theta_05_stats} {output.jaccard_05_stats} {output.rin} {output.age} {output.sex} {output.batch} {output.batch_v_RIN} {output.batch_violin} {output.output_var_explained}
+            
+            #Snakemake will error out if you do not do something with the output file in the rule. 
+            #To get around this, I ls the output file
+            ls {output.output_var_explained}
+            """
+
+rule figureS2b_logistic_regression: 
+        input:
+            results = config["output_directory"] + "/DataFrames/metadata_counts_outlier_joined.csv"
+        output:
+            all_05_stats = config["output_directory"] + "/Stats/all_05_glm.csv",
+            psi3_05_stats = config["output_directory"] + "/Stats/psi3_05_glm.csv",
+            psi5_05_stats= config["output_directory"] + "/Stats/psi5_05_glm.csv",
+            theta_05_stats = config["output_directory"] + "/Stats/theta_05_glm.csv",
+            jaccard_05_stats = config["output_directory"] + "/Stats/jaccard_05_glm.csv",
+            output_var_explained = config["output_directory"] + "/Plots/FigureS2b/figureS2b_variance_explained_logistic.pdf",
+        shell:"""
+            Rscript scripts/FigureS2b_logistic_regression.r {input.results} {output.all_05_stats} {output.psi3_05_stats} {output.psi5_05_stats} {output.theta_05_stats} {output.jaccard_05_stats} {output.output_var_explained}
+        
+            #Snakemake will error out if you do not do something with the output file in the rule. 
+            #To get around this, I ls the output file
+            ls {output.output_var_explained}
+            """
+
+rule figureS3: 
+            input:
+                results = config["FRASER1_results_uncompiled"],
+                mig_file = config["mig_file"]
+            output:
+                upset_plot = config["output_directory"] + "/Plots/FigureS3/upset_plot_RNU4ATAC_genes.pdf",
+                rnu4atac_gene_comparison = config["output_directory"] + "/Stats/RNU4ATAC_gene_comparison.csv",
+                rnu4atac_rnu6atac_gene_comparison = config["output_directory"] + "/Stats/RNU4ATAC_RNU6ATAC_gene_comparison.csv"
+            shell:"""
+                Rscript scripts/FigureS3.r {input.results} {input.mig_file} {output.upset_plot} {output.rnu4atac_gene_comparison} {output.rnu4atac_rnu6atac_gene_comparison}
+            
+                #Snakemake will error out if you do not do something with the output file in the rule. 
+                #To get around this, I ls the output file
+                ls {output.upset_plot}
+                """
+
+rule figure_S4:
+    input:
+        size_dir = config["size_run_dir"],
+        mig_file = config["mig_file"]
+    output:
+        gradient_plot = config["output_directory"] + "/Plots/FigureS4/gradient_plot.pdf",
+        stats_lm = config["output_directory"] + "/Stats/Size_linear_model_analysis.csv",
+        stats_z_lm = config["output_directory"] + "/Stats/Size_zscore_linear_model_analysis.csv"
+    shell:"""
+        Rscript scripts/FigureS4.r  {input.size_dir} {input.mig_file} {output.gradient_plot} {output.stats_lm} {output.stats_z_lm}
+    
+        #Snakemake will error out if you do not do something with the output file in the rule. 
+        #To get around this, I ls the output file
+        ls {output.gradient_plot}
+        """
+
+rule figure_S5:
+        input:
+            results_FRASER2 = config["FRASER2_results_uncompiled"],
+            mig_file = config["mig_file"]
+        output:
+            jaccard_geom_point = config["output_directory"] + "/Plots/FigureS5/jaccard_geom_point.pdf",
+        shell:"""
+            Rscript scripts/FigureS5.r  {input.results_FRASER2} {input.mig_file} {output.jaccard_geom_point}
+        
+            #Snakemake will error out if you do not do something with the output file in the rule. 
+            #To get around this, I ls the output file
+            ls {output.jaccard_geom_point}
+            """
+    
