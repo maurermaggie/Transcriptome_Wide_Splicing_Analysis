@@ -2,7 +2,6 @@
 
 ## FRASER_snakemake
 This folder contains my Snakemake pipeline for running FRASER (and not FRASER2 at the moment).
-More details coming soon.
 
 ### Installation
 Please install the conda environments with:
