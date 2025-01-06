@@ -51,13 +51,13 @@ Contains the gene sets used in the manuscript. They were originally from Cormier
 
 Sources of the gene sets:
 
-| Gene set | Source |
-| :---: | :---: |
-| Haploinsufficient | ClinGen dataset > Cormier et al., 2021 | 
-| Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | 
-| Autosomal dominant | Blekhman et al., 2008; Berg et al., 2013 | 
-| Olfactory receptor | Mainland, et al., 2015 |
-| CRISPR non-essential | Hart et al., 2017 | 
-| Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz > Firth et al., 2011;  Fitzgerald, et al., 2015; Wright et al., 2015; McRae, et al., 2017; Wright, et al., 2018 | 
-| OMIM | https://omim.org/downloads > Amberger et al., 2019 |
+| Gene set | Source | Filename | 
+| :---: | :---: | :---: |
+| Haploinsufficient | ClinGen dataset > Cormier et al., 2021 | haploinsufficient.tsv | 
+| Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | autosomal_recessive.tsv | 
+| Autosomal dominant | Blekhman et al., 2008; Berg et al., 2013 | autosomal_dominant.tsv | 
+| Olfactory receptor | Mainland, et al., 2015 | olfactory_receptors.tsv | 
+| CRISPR non-essential | Hart et al., 2017 | CRISPR_nonessential_genes.tsv | 
+| Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz > Firth et al., 2011;  Fitzgerald, et al., 2015; Wright et al., 2015; McRae, et al., 2017; Wright, et al., 2018 | developmental_delay_genes.csv | 
+| OMIM | https://omim.org/downloads > Amberger et al., 2019 | OMIM_genes.tsv |
 
