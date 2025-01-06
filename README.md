@@ -51,8 +51,8 @@ Contains the gene sets used in the manuscript. They were originally from Cormier
 
 Sources of the gene sets:
 
-| Gene set | Description | Source |
-| :---: | :---: | :---: |
+| Gene set | Source |
+| :---: | :---: |
 | Haploinsufficient | ClinGen dataset (Cormier et al., 2021) | 
 | Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | 
 | Autosomal dominant  Blekhman et al., 2008; Berg et al., 2013 | 
