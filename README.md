@@ -53,7 +53,7 @@ Sources of the gene sets:
 
 | Gene set | Source |
 | :---: | :---: |
-| Haploinsufficient | ClinGen dataset (Cormier et al., 2021) | 
+| Haploinsufficient | ClinGen dataset > Cormier et al., 2021 | 
 | Autosomal recessive | Blekhman et al., 2008; Berg et al., 2013 | 
 | Autosomal dominant | Blekhman et al., 2008; Berg et al., 2013 | 
 | Olfactory receptor | Mainland, et al., 2015 |
