@@ -47,6 +47,17 @@ This folder contains the code for the main and supplemental figures of my manusc
 This folder contains the code for Figure 1, the creation of the metadata file, and a comparison of novel samples vs samples in Ungar et al., 2024 (PMID: PMC10802764).
 
 ## Gene Information
-Contains the genesets used in the manuscript. They were originally from Cormier, et al., 2022 (PMID: 36376793) and can also be found at https://github.com/macarthur-lab/gene_lists
+Contains the gene sets used in the manuscript. They were originally from Cormier, et al., 2022 (PMID: 36376793) and can also be found at https://github.com/macarthur-lab/gene_lists
 
+Sources of the gene sets:
+
+| Gene set | Description | URL Source | Source |
+| :---: | :---: | :---: | :---: 
+| Haploinsufficient | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/haploinsufficient.tsv | ClinGen dataset (Cormier et al., 20212) | 
+| Autosomal recessive | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/autosomal_recessive.tsv | Blekhman et al., 20083; Berg et al., 20134 | 
+| Autosomal dominant | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/autosomal_dominant.tsv | Blekhman et al., 20083; Berg et al., 20134 | 
+| Olfactory receptor | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/olfactory_receptors.tsv | Mainland, et al., 20155 |
+| CRISPR non-essential | https://github.com/maurermaggie/Transcriptome_Wide_Splicing_Analysis/blob/main/Gene_Information/CRISPR_nonessential_genes.tsv | Hart et al., 20176 | 
+| Developmental delay | https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz | Firth et al., 20117;  Fitzgerald, et al., 20158; Wright et al., 20159; McRae, et al., 201710; Wright, et al., 201811 | 
+| OMIM | https://omim.org/downloads/ | OMIM dataset (Amberger et al., 201912) |
 
