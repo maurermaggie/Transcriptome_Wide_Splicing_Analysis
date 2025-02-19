@@ -1,0 +1,10 @@
+name: fraser1
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - bioconductor-fraser=1.14.0
+  - bioconductor-txdb.hsapiens.ucsc.hg38.knowngene
+  - bioconductor-org.hs.eg.db
+  - r-tidyverse
