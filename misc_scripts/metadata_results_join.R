@@ -14,8 +14,8 @@ missing_1 <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs
 #27
 missing_2 <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/Missing_Metadata_2.csv")
 #68
-all_uncompiled <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/output/FRASER_Stanford_Filters/FRASER_output.csv") %>% select(sampleID) %>% unique
-files <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/output/FRASER_Stanford_Filters/FRASER_input.csv")
+all_uncompiled <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/pipelines/FRASER_snakemake/output/FRASER_no_missing/FRASER_output.csv") %>% select(sampleID) %>% unique
+files <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/pipelines/FRASER_snakemake/output/FRASER_no_missing/FRASER_input.csv")
 missing_Miami <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/missing_metadata_miami_NIH.csv") %>% select(-`...6`)
 GSS_UDN_MAP <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/GSS_UDN_MAP.csv")
 RNA_seq_info <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/RIN_sequencing_info.csv")
@@ -388,8 +388,11 @@ ID_missing_matched_joined$age <- as.character(ID_missing_matched_joined$age)
 ##################----joined----###############
 ID_matched_joined %>% nrow #70
 participant_id_matched_joined %>% nrow #58
+participant_id_matched_joined$ID <- participant_id_matched_joined$participant_id
 sample_id_matched_joined %>% nrow #24
+sample_id_matched_joined$ID <- sample_id_matched_joined$sample_id
 wet_lab_matched_joined %>% nrow #255
+wet_lab_matched_joined$ID <- wet_lab_matched_joined$wetlab_id
 ID_missing_matched_joined %>% nrow #7
 
 FRASER_metadata_joined <- bind_rows(ID_matched_joined, participant_id_matched_joined) %>%
@@ -402,11 +405,13 @@ FRASER_missing <- merge(FRASER_metadata_joined_missing, FRASER_metadata_joined[,
 FRASER_metadata_joined <- bind_rows(FRASER_metadata_joined, FRASER_missing)
 #n=424
 
+FRASER_metadata_joined$sample_ID <- FRASER_metadata_joined$ID
+
 #######################################################
 ############----Combine GSS and UDN IDs----###########
 ######################################################
 #indv_id (GSS and UDN), participant_id (GSS), wetlab_id (RDID), sample_id (RDID), institution_id (UDN_ID)
-
+colnames(GSS_UDN_MAP) <- c("GSS", "UDN")
 intersect(GSS_UDN_MAP$UDN, FRASER_metadata_joined$indv_id)
 intersect(GSS_UDN_MAP$UDN, FRASER_metadata_joined$institution_id)
 intersect(GSS_UDN_MAP$UDN, FRASER_metadata_joined$ID)
@@ -435,20 +440,20 @@ FRASER_metadata_important <- FRASER_metadata_remove_allNA_cols %>% select(-count
 
 ################----IDENTIFIERS----###################
 #indv_id (UDN), participant_id (GSS), wetlab_id (RDID), sample_id (RDID), institution_id (UDN), GSS, ID (UDN)
-FRASER_metadata_identifiers <- FRASER_metadata_important %>% select(indv_id, participant_id, wetlab_id, sample_id, institution_id, GSS, ID)
+FRASER_metadata_identifiers <- FRASER_metadata_important %>% select(indv_id, participant_id, wetlab_id, sample_ID, institution_id, GSS, ID)
 
 FRASER_metadata_identifiers$numbers <- rownames(FRASER_metadata_identifiers)
 
 #~~~~~~ID x instit_id = UDN_ID~~~~~~#
-intersect(FRASER_metadata_identifiers$ID, FRASER_metadata_identifiers$institution_id)
+intersect(FRASER_metadata_identifiers$sample_ID, FRASER_metadata_identifiers$institution_id)
 
-FRASER_metadata_identifiers_ID <- FRASER_metadata_identifiers %>% filter(!is.na(ID))
+FRASER_metadata_identifiers_ID <- FRASER_metadata_identifiers %>% filter(grepl("UDN", ID))
 FRASER_metadata_identifiers_institution_id <- FRASER_metadata_identifiers %>% filter(!is.na(institution_id))
-FRASER_metadata_identifiers_NA <- FRASER_metadata_identifiers %>% filter(is.na(institution_id)) %>% filter(is.na(ID))
+FRASER_metadata_identifiers_NA <- FRASER_metadata_identifiers %>% filter(is.na(institution_id)) %>% filter(! grepl("UDN", ID))
 
 FRASER_metadata_identifiers_ID$UDN_ID <- FRASER_metadata_identifiers_ID$ID
 FRASER_metadata_identifiers_institution_id$UDN_ID <- FRASER_metadata_identifiers_institution_id$institution_id
-FRASER_metadata_identifiers_NA$UDN_ID <- NA
+FRASER_metadata_identifiers_NA$UDN_ID <- "NA"
 
 FRASER_metadata_identifiers <- bind_rows(FRASER_metadata_identifiers_ID, FRASER_metadata_identifiers_institution_id, FRASER_metadata_identifiers_NA) %>%
                                 select(-ID, -institution_id)
@@ -480,7 +485,27 @@ FRASER_metadata_identifiers <- bind_rows(FRASER_metadata_identifiers_GSS, FRASER
                                 select(-GSS, -participant_id)
 
 #~~~~~~sample_id = RDID~~~~~~#
-names(FRASER_metadata_identifiers)[names(FRASER_metadata_identifiers) == 'sample_id'] <- 'RDID'
+#names(FRASER_metadata_identifiers)[names(FRASER_metadata_identifiers) == 'sample_id'] <- 'RDID'
+FRASER_metadata_identifiers_wetlab_RDID <- FRASER_metadata_identifiers %>% filter(grepl("RD", FRASER_metadata_identifiers$wetlab_id))
+FRASER_metadata_identifiers_wetlab_non_RDID <- FRASER_metadata_identifiers %>% filter(! grepl("RD", FRASER_metadata_identifiers$wetlab_id))
+
+FRASER_metadata_identifiers_wetlab_RDID$RDID <- FRASER_metadata_identifiers_wetlab_RDID$wetlab_id
+FRASER_metadata_identifiers_wetlab_non_RDID$RDID <- NA 
+
+FRASER_metadata_identifiers <- bind_rows(FRASER_metadata_identifiers_wetlab_RDID, FRASER_metadata_identifiers_wetlab_non_RDID)
+
+FRASER_metadata_identifiers_no_RDID <- FRASER_metadata_identifiers %>% filter(is.na(RDID))
+FRASER_metadata_identifiers_RDID <- FRASER_metadata_identifiers %>% filter(!is.na(RDID))
+
+FRASER_metadata_identifiers_no_RDID_sample_ID_RDID <- FRASER_metadata_identifiers_no_RDID %>% filter(grepl("RD", FRASER_metadata_identifiers_no_RDID$sample_ID))
+FRASER_metadata_identifiers_no_RDID_sample_ID_non_RDID <- FRASER_metadata_identifiers_no_RDID %>% filter(! grepl("RD", FRASER_metadata_identifiers_no_RDID$sample_ID))
+
+FRASER_metadata_identifiers_no_RDID_sample_ID_RDID$RDID <- FRASER_metadata_identifiers_no_RDID_sample_ID_RDID$sample_ID
+FRASER_metadata_identifiers_no_RDID_sample_ID_non_RDID$RDID <- NA 
+
+FRASER_metadata_identifiers_no_RDID <- bind_rows(FRASER_metadata_identifiers_no_RDID_sample_ID_RDID, FRASER_metadata_identifiers_no_RDID_sample_ID_non_RDID)
+
+FRASER_metadata_identifiers <- bind_rows(FRASER_metadata_identifiers_RDID, FRASER_metadata_identifiers_no_RDID)
 
 #~~~~~~rejoin dataframes~~~~~~#
 FRASER_metadata_important$numbers <- rownames(FRASER_metadata_important)
@@ -631,7 +656,7 @@ absent <- FRASER_metadata_important %>% filter(presence == "Present;Present;Pres
 absent$notes <- "absent HP:0000159"
 absent$term_id <- "Unicoronalsynostosis;HP:0000587;Unicoronal synostosis;HP:0001347;HP:0004442"
 
-not_present_absent <- FRASER_metadata_important %>% filter(!is_in(numbers, c("108", "96")))
+not_present_absent <- FRASER_metadata_important %>% filter(!is_in(numbers, c(unknown$numbers, absent$numbers)))
 
 FRASER_metadata_important <- bind_rows(unknown, absent, not_present_absent) %>% select(-presence)
 
@@ -885,7 +910,12 @@ missing_age_df_RDID <- missing_age_df %>% select(RDID, `AGE AT COLLECTION`)
 colnames(missing_age_df_RDID) <- c("RDID", "age")
 missing_age_df_joined_RDID <- left_join(FRASER_missing_age_df_RDID, missing_age_df_RDID)
 
-FRASER_missing_age <- rbind(missing_age_df_joined_GSS, missing_age_df_joined_RDID)
+FRASER_missing_age_df_UDN <- filter(FRASER_metadata_important_missing_age, grepl("UDN", UDN_ID))
+missing_age_df_UDN <- missing_age_df %>% select(UDN_ID, `AGE AT COLLECTION`)
+colnames(missing_age_df_UDN) <- c("UDN_ID", "age")
+missing_age_df_joined_UDN <- left_join(FRASER_missing_age_df_UDN, missing_age_df_UDN)
+
+FRASER_missing_age <- rbind(missing_age_df_joined_GSS, missing_age_df_joined_RDID, missing_age_df_joined_UDN)
 
 FRASER_metadata_important <- rbind(FRASER_metadata_important_with_age, FRASER_missing_age)
 
@@ -963,18 +993,25 @@ FRASER_metadata_important %>% filter(is.na(batch))
 
 #############----Add ID----###############
 FRASER_metadata_important$ID <- paste(FRASER_metadata_important$RDID, FRASER_metadata_important$GSS_ID, FRASER_metadata_important$UDN_ID, sep="_")
-bad_IDs <- FRASER_metadata_important %>% group_by(ID) %>% tally() %>% arrange(desc(n)) %>% filter(n ==2) %>% pull(ID)
+bad_IDs <- FRASER_metadata_important %>% group_by(sample_ID) %>% tally() %>% arrange(desc(n)) %>% filter(n ==2) %>% pull(sample_ID)
 
-FRASER_metadata_important_bad <- FRASER_metadata_important %>% filter(ID %in% bad_IDs) %>% arrange(ID) 
+FRASER_metadata_important_bad <- FRASER_metadata_important %>% filter(sample_ID %in% bad_IDs) %>% arrange(sample_ID) 
 FRASER_metadata_important_bad_cases <- FRASER_metadata_important_bad %>% filter(affected_status == "Case") %>% filter(!is.na(notes))
 FRASER_metadata_important_bad_controls <- FRASER_metadata_important_bad %>% filter(affected_status == "Control") %>% select(-number, -numbers) %>% unique
-FRASER_metadata_important_bad_controls$numbers <- c("98", "105")
-FRASER_metadata_important_bad_controls$number <- c("1", "4")
+
+number<- FRASER_metadata_important_bad %>% filter(affected_status == "Control") %>% select(number) %>% slice(1) %>% pull(number)
+numbers<- FRASER_metadata_important_bad %>% filter(affected_status == "Control") %>% select(numbers) %>% slice(1) %>% pull(numbers)
+
+FRASER_metadata_important_bad_controls$numbers <- c(numbers)
+FRASER_metadata_important_bad_controls$number <- c(number)
 
 FRASER_metadata_important_bad <- bind_rows(FRASER_metadata_important_bad_cases, FRASER_metadata_important_bad_controls)
-FRASER_metadata_important_good <- FRASER_metadata_important %>% filter(! ID %in% bad_IDs)
+FRASER_metadata_important_good <- FRASER_metadata_important %>% filter(! sample_ID %in% bad_IDs)
 
 FRASER_metadata_important <- bind_rows(FRASER_metadata_important_bad, FRASER_metadata_important_good)
+
+names(FRASER_metadata_important)[names(FRASER_metadata_important) == 'sample_ID'] <- 'sampleID'
+names(FRASER_metadata_important)[names(FRASER_metadata_important) == 'sampleID'] <- 'sample_ID'
 
 write_csv(FRASER_metadata_important, "/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/FRASER_metadata.csv")
 
@@ -1074,59 +1111,84 @@ FRASER_metadata_important <- FRASER_metadata_important %>% select(-number, -numb
 ######################################################
 ################----Add Sample ID----#################
 ######################################################
-colnames(FRASER_result_combined) <- c("sampleID")
+setdiff(FRASER_result_combined$wetlab_id, FRASER_metadata_important$sample_ID)
+#colnames(FRASER_result_combined) <- c("sample_ID")
 
-FRASER_result_combined_RD <- filter(FRASER_result_combined, grepl("RD", sampleID))
-colnames(FRASER_result_combined_RD) <- c("RDID")
-FRASER_RD <- left_join(FRASER_result_combined_RD, FRASER_metadata_important)
-FRASER_RD$sampleID <- FRASER_RD$RDID
+#FRASER_result_combined_RD <- filter(FRASER_result_combined, grepl("RD", sampleID))
+#colnames(FRASER_result_combined_RD) <- c("RDID")
+#FRASER_RD <- left_join(FRASER_result_combined_RD, FRASER_metadata_important)
+#FRASER_RD$sampleID <- FRASER_RD$RDID
 
-FRASER_result_combined_GSS <- filter(FRASER_result_combined, grepl("GSS", sampleID))
-colnames(FRASER_result_combined_GSS) <- c("GSS_ID")
-FRASER_GSS <- left_join(FRASER_result_combined_GSS, FRASER_metadata_important)
-FRASER_GSS$sampleID <- FRASER_GSS$GSS_ID
+#FRASER_result_combined_GSS <- filter(FRASER_result_combined, grepl("GSS", sampleID))
+#colnames(FRASER_result_combined_GSS) <- c("GSS_ID")
+#FRASER_GSS <- left_join(FRASER_result_combined_GSS, FRASER_metadata_important)
+#FRASER_GSS$sampleID <- FRASER_GSS$GSS_ID
 
-FRASER_result_combined_UDN <- filter(FRASER_result_combined, grepl("UDN", sampleID))
-colnames(FRASER_result_combined_UDN) <- c("UDN_ID")
-FRASER_UDN <- left_join(FRASER_result_combined_UDN, FRASER_metadata_important)
-FRASER_UDN$sampleID <- FRASER_UDN$UDN_ID
+#FRASER_result_combined_UDN <- filter(FRASER_result_combined, grepl("UDN", sampleID))
+#colnames(FRASER_result_combined_UDN) <- c("UDN_ID")
+#FRASER_UDN <- left_join(FRASER_result_combined_UDN, FRASER_metadata_important)
+#FRASER_UDN$sampleID <- FRASER_UDN$UDN_ID
 
-FRASER_metadata_important_with_missing <- bind_rows(FRASER_RD, FRASER_GSS, FRASER_UDN) %>% filter(!is.na(sampleID)) %>% unique
-missing <- FRASER_metadata_important_with_missing %>% filter(is.na(affected_status)) %>% pull(GSS_ID)
-found <- joined_missing %>% filter(participant_id %in% missing) 
-found <- found[, !colSums(is.na(found)), drop = FALSE] %>% select(-ancestry_detail, -gregor_center, -maternal_id, -missing_variant_case, -paternal_id, 
-                     -reported_ethnicity, -reported_race, -twin_id, -phenotype_id, -onset_age_range, -number)
-colnames(found) <- c("GSS_ID", "affected_status", "family_identifier", "notes", "proband_relationship", "sex", "solved_status", "additional_details", 
-                     "additional_modifiers", "ontology", "presence", "term_id")
-found$HPO_terms <- paste(found$term_id, ";", found$additional_modifiers)
-found$HPO_terms <- gsub("NA;", "", found$HPO_terms)
-found$HPO_terms <- gsub(";NA", "", found$HPO_terms)
-found$HPO_terms <- gsub(" ; NA", "", found$HPO_terms)
+#FRASER_metadata_important_with_missing <- bind_rows(FRASER_RD, FRASER_GSS, FRASER_UDN) %>% filter(!is.na(sampleID)) %>% unique
+#missing <- FRASER_metadata_important_with_missing %>% filter(is.na(affected_status)) %>% pull(GSS_ID)
+#found <- joined_missing %>% filter(participant_id %in% missing) 
+#found <- found[, !colSums(is.na(found)), drop = FALSE] %>% select(-ancestry_detail, -gregor_center, -maternal_id, -missing_variant_case, -paternal_id, 
+ #                    -reported_ethnicity, -reported_race, -twin_id, -phenotype_id, -onset_age_range, -number)
+#colnames(found) <- c("GSS_ID", "affected_status", "family_identifier", "notes", "proband_relationship", "sex", "solved_status", "additional_details", 
+  #                   "additional_modifiers", "ontology", "presence", "term_id")
+#found$HPO_terms <- paste(found$term_id, ";", found$additional_modifiers)
+#found$HPO_terms <- gsub("NA;", "", found$HPO_terms)
+#found$HPO_terms <- gsub(";NA", "", found$HPO_terms)
+#found$HPO_terms <- gsub(" ; NA", "", found$HPO_terms)
 
-found$additional_details <- c("chronic congestion", "Accretions on teeth, Maxillary lip tie;single central incisor behind two normal upper incisors")
-found$notes <- paste(found$notes, "|", found$additional_details)
+#found$additional_details <- c("chronic congestion", "Accretions on teeth, Maxillary lip tie;single central incisor behind two normal upper incisors")
+#found$notes <- paste(found$notes, "|", found$additional_details)
 
-found$affected_status <- c("Case", "Case")
-found$sex <- c("M", "F")
+#found$affected_status <- c("Case", "Case")
+#found$sex <- c("M", "F")
 
-found <- found %>% select(-additional_details, -additional_modifiers, -ontology, -presence, -term_id)
+#found <- found %>% select(-additional_details, -additional_modifiers, -ontology, -presence, -term_id)
 
-missing_cols <- setdiff(colnames(FRASER_metadata_important_with_missing), colnames(found))
-found$sampleID <- found$GSS_ID
-found$age <- c(NA, "2")
+#missing_cols <- setdiff(colnames(FRASER_metadata_important_with_missing), colnames(found))
+#found$sampleID <- found$GSS_ID
+#found$age <- c(NA, "2")
 
-FRASER_metadata_important_without_missing <-  FRASER_metadata_important_with_missing %>% filter(! GSS_ID %in% missing) %>% unique
+#FRASER_metadata_important_without_missing <-  FRASER_metadata_important_with_missing %>% filter(! GSS_ID %in% missing) %>% unique
 
-FRASER_metadata_important <- bind_rows(FRASER_metadata_important_without_missing, found)
+#FRASER_metadata_important <- bind_rows(FRASER_metadata_important_without_missing, found)
 
 #n=422
-write_csv(FRASER_metadata_important, "/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/FRASER_metadata_updated_batches.csv")
 
 ################----Low RIN----#################
 FRASER_metadata_important$RIN <- as.numeric(FRASER_metadata_important$RIN)
-low_RIN <- FRASER_metadata_important %>% filter(RIN < 7) %>% select(sampleID, RIN)
+low_RIN <- FRASER_metadata_important %>% filter(RIN < 7) %>% select(sample_ID, RIN)
+colnames(low_RIN) <- c("sampleID", "RIN")
 
 write_csv(low_RIN, "/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/low_RIN.csv")
+
+##############----Missing RIN found by Devon----##############
+found_RIN <- read_excel("/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/no_RIN.xlsx")
+colnames(found_RIN) <- c("GSS_ID", "UDN_ID", "RDID", "RIN")
+
+FRASER_metadata_important_with_RIN <- FRASER_metadata_important %>% filter(!is.na(RIN))
+
+FRASER_metadata_important_missing_RIN <- FRASER_metadata_important %>% filter(is.na(RIN)) %>% select(-RIN)
+FRASER_metadata_important_missing_RIN_sample_ID <- FRASER_metadata_important_missing_RIN %>% pull(sample_ID)
+
+UDN_RIN <- filter(found_RIN, UDN_ID %in% FRASER_metadata_important_missing_RIN_sample_ID) %>% select(UDN_ID, RIN)
+UDN_RIN$RIN <- as.numeric(UDN_RIN$RIN)
+GSS_RIN <- filter(found_RIN, GSS_ID %in% FRASER_metadata_important_missing_RIN_sample_ID) %>% select(GSS_ID, RIN)
+GSS_RIN$RIN <- as.numeric(GSS_RIN$RIN)
+
+FRASER_metadata_important_missing_RIN_UDN <- left_join(FRASER_metadata_important_missing_RIN, UDN_RIN) %>% filter(!is.na(RIN))
+FRASER_metadata_important_missing_RIN_GSS <- left_join(FRASER_metadata_important_missing_RIN, GSS_RIN) %>% filter(!is.na(RIN))
+
+FRASER_metadata_important_missing_RIN <- bind_rows(FRASER_metadata_important_missing_RIN_UDN, FRASER_metadata_important_missing_RIN_GSS)
+FRASER_metadata_important_with_RIN$RIN <- as.numeric(FRASER_metadata_important_with_RIN$RIN )
+
+FRASER_metadata_important <- bind_rows(FRASER_metadata_important_with_RIN, FRASER_metadata_important_missing_RIN)
+names(FRASER_metadata_important)[names(FRASER_metadata_important) == 'sample_ID'] <- 'sampleID'
+write_csv(FRASER_metadata_important, "/home/maurertm/smontgom/shared/UDN/Analysis/FRASER/inputs/metadata/FRASER_metadata_updated_batches.csv")
 
 ################----Missing Samples----#################
 not_missing <- FRASER_metadata_important %>% filter(!is.na(RIN)) %>% filter(!is.na(age)) %>% filter(!is.na(sex)) %>% filter(!is.na(batch)) %>% filter(!is.na(affected_status)) %>% filter(affected_status != "Unknown") %>% pull(sampleID)
