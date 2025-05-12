@@ -23,12 +23,12 @@ FRASER_snakemake/conda_envs
 -Make a config.yaml file in the config folder with the following information
 ```
 output_directory: "/file/path/to/output/directory"
-metadata_file: "/file/path/to/metadata/file.csv"
-data_type: "Tissue Type"
-mig_file: "/file/path/to/Homo_sapiens_gene.csv"
 input_directory: "/file/path/where/you/want/to/symlink/data/to"
 file_list: "/csv/file/where/you/have/list/of/files/to/run.csv"
+FRASER_type: "Both"
 ```
+FRASER_type can be "FRASER" (to indicate you want to run FRASER with the outputs of theta, psi3, and psi5), "FRASER2" (to indicate you want to run FRASER with the Jaccard index output), or "Both" (to indicate you want to receive all four outputs)
+
 ### Running FRASER
 -Go to the FRASER_snakemake/workflow directory
 
