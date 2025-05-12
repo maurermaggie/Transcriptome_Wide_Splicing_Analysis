@@ -4,12 +4,8 @@ import pandas as pd
 
 ###################################---Step 1: Define all Config Variables---######################################################
 output_directory=config["output_directory"]
-metadata_file=config["metadata_file"]
-data_type=config["data_type"]
-mig_file=config["mig_file"]
 input_directory=config["input_directory"]
 file_list=config["file_list"]
-bam_file_directory=config["bam_file_directory"]
 FRASER_type=config["FRASER_type"]
 
 ###########################################---Step 2: Define Rules--##############################################################
@@ -48,7 +44,7 @@ rule make_symlinks:
     resources:
         time="4:00:00",
         mem="158GB",
-        partition="nih_s10",
+        partition="batch",
         account="smontgom"
     shell:"""
         mkdir -p {params.input_directory}
@@ -71,19 +67,18 @@ rule create_input_file:
         input_directory = config["input_directory"],
         input_file = config["input_directory"] + "/FRASER_symlinking_instructions.sh"
     params:
-        data_type = config["data_type"],
         output_directory = config["output_directory"]
     output:
         output_file = config["output_directory"] + "/FRASER_input.csv"
     resources:
         time="4:00:00",
         mem="158GB",
-        partition="nih_s10",
+        partition="batch",
         account="smontgom"
     shell:"""
     mkdir -p {params.output_directory}
     ls {input.input_file}
-    Rscript scripts/preprocessing.r  {input.input_directory} {params.data_type} {params.output_directory}
+    Rscript scripts/preprocessing.r  {input.input_directory} {params.output_directory}
     
     #Snakemake will error out if you do not do something with the output file in the rule. 
     #To get around this, I ls the output file
@@ -98,8 +93,8 @@ rule run_FRASER:
     output:
         output_file = config["output_directory"] + "/FRASER1/FRASER_output.csv"
     resources:
-        mem = "1TB",
-        time = "96:00:00"
+        mem = "512GB",
+        time = "102:00:00"
     conda:
         'fraser1'
     shell:"""
@@ -122,7 +117,7 @@ rule run_FRASER2:
         output_file = config["output_directory"] + "/FRASER2/FRASER_output.csv"
     resources:
         mem = "512GB",
-        time = "96:00:00"
+        time = "102:00:00"
     conda:
         'fraser2'
     shell:"""
@@ -155,24 +150,4 @@ rule FRASER_results:
     #To get around this, I ls the output file
     ls {output.output_file}
     echo "rule done"
-    """
-
-rule compile_results:
-    input:
-        input_file = config["output_directory"] + "/FRASER_input.csv",
-        output_file = config["output_directory"] + "/FRASER_output.csv"
-    params:
-        metadata_file = config["metadata_file"],
-        mig_file = config["mig_file"],
-        output_directory = config["output_directory"]
-    output:
-        raw_output = config["output_directory"] + "/FRASER_results_raw.csv",
-        zscore_output = config["output_directory"] + "/FRASER_results_zscores.csv"
-    shell:"""
-    Rscript scripts/results_compilation.r {input.input_file} {input.output_file} {params.metadata_file} {params.mig_file} {params.output_directory}
-
-    #Snakemake will error out if you do not do something with the output file in the rule. 
-    #To get around this, I ls the output file
-    ls {output.raw_output}
-    ls {output.zscore_output}
     """
