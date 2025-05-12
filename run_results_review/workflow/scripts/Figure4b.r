@@ -18,13 +18,13 @@ title_lab <- expression(atop("Comparison of the Number of" ~ theta ~ "Outlier Ju
                      "Per Sample between Samples with and without an Excess",
                      "Number of" ~ theta ~ "Outlier Junctions in MIGs"))
 y_lab <- expression("Number of" ~ theta ~ "Outlier Junctions in MIGs")
-joined_RNU4ATAC <- joined %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
+joined_RNU4ATAC <- joined %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
 joined_RNU4ATAC$MS <- "RNU4ATAC-opathies"
 
-joined_RNU6ATAC <- joined %>% filter(sampleID == "RD380")
+joined_RNU6ATAC <- joined %>% filter(sampleID == "D1")
 joined_RNU6ATAC$MS <- "RNU6ATAC-opathy"
 
-joined_non_MS <- joined %>% filter(! sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam", "RD380"))
+joined_non_MS <- joined %>% filter(! sampleID %in% c("A1", "B1", "C1", "C2", "D1"))
 joined_non_MS$MS <- "All Other Samples"
 
 joined <- bind_rows(joined_RNU4ATAC, joined_non_MS, joined_RNU6ATAC)
