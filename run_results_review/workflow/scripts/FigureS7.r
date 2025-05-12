@@ -60,7 +60,7 @@ lm_MIGs_z_fp <- args[5]
 ######################-----Make Dataframe-----##########################
 ########################################################################
 
-######################-----MIGs with IR in RD268-----##########################
+######################-----MIGs with IR in A1-----##########################
 get_number_MIGs_theta <- function(dataframe, files, col_name){
         MIG_table_select <- MIGs %>% select(gene_symbol, gene_class) %>% unique
         colnames(MIG_table_select) <- c("gene_symbol", "gene_class")
@@ -87,18 +87,18 @@ get_number_MIGs_theta <- function(dataframe, files, col_name){
 
 }
 
-twenty5_MIGs <- get_number_MIGs_theta(twenty5, twenty5_files, "25") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_25)
-fifty_MIGs <- get_number_MIGs_theta(fifty, fifty_files, "50") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_50)
-one00_MIGs <- get_number_MIGs_theta(one00, one00_files, "100") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_100)
-one50_MIGs <- get_number_MIGs_theta(one50, one50_files, "150") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_150)
-two00_MIGs <- get_number_MIGs_theta(two00, two00_files, "200") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_200)
-three00_MIGs <- get_number_MIGs_theta(three00, three00_files, "300") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_300)
-four00_MIGs <- get_number_MIGs_theta(four00, four00_files, "400") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_400)
+twenty5_MIGs <- get_number_MIGs_theta(twenty5, twenty5_files, "25") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_25)
+fifty_MIGs <- get_number_MIGs_theta(fifty, fifty_files, "50") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_50)
+one00_MIGs <- get_number_MIGs_theta(one00, one00_files, "100") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_100)
+one50_MIGs <- get_number_MIGs_theta(one50, one50_files, "150") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_150)
+two00_MIGs <- get_number_MIGs_theta(two00, two00_files, "200") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_200)
+three00_MIGs <- get_number_MIGs_theta(three00, three00_files, "300") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_300)
+four00_MIGs <- get_number_MIGs_theta(four00, four00_files, "400") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_400)
 
 number_MIGs_with_IR <- data.frame(sample_size = c(25, 50, 100, 150, 200, 300, 400), 
                             number_MIGs_theta=c(twenty5_MIGs, fifty_MIGs, one00_MIGs, one50_MIGs, two00_MIGs, three00_MIGs, four00_MIGs))
 
-######################-----MIGs with IR in RD268-----##########################
+######################-----MIGs with IR in A1-----##########################
 get_number_MIGs_genes_theta <- function(dataframe, files, col_name){
         MIG_table_select <- MIGs %>% select(gene_symbol, gene_class) %>% unique
         colnames(MIG_table_select) <- c("gene_symbol", "gene_class")
@@ -125,13 +125,13 @@ get_number_MIGs_genes_theta <- function(dataframe, files, col_name){
 
 }
 
-twenty5_MIGs_genes <- get_number_MIGs_genes_theta(twenty5, twenty5_files, "25") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_25)
-fifty_MIGs_genes <- get_number_MIGs_genes_theta(fifty, fifty_files, "50") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_50)
-one00_MIGs_genes <- get_number_MIGs_genes_theta(one00, one00_files, "100") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_100)
-one50_MIGs_genes <- get_number_MIGs_genes_theta(one50, one50_files, "150") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_150)
-two00_MIGs_genes <- get_number_MIGs_genes_theta(two00, two00_files, "200") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_200)
-three00_MIGs_genes <- get_number_MIGs_genes_theta(three00, three00_files, "300") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_300)
-four00_MIGs_genes <- get_number_MIGs_genes_theta(four00, four00_files, "400") %>% filter(sampleID=="RD268") %>% pull (no_MIGs_theta_juncs_400)
+twenty5_MIGs_genes <- get_number_MIGs_genes_theta(twenty5, twenty5_files, "25") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_25)
+fifty_MIGs_genes <- get_number_MIGs_genes_theta(fifty, fifty_files, "50") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_50)
+one00_MIGs_genes <- get_number_MIGs_genes_theta(one00, one00_files, "100") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_100)
+one50_MIGs_genes <- get_number_MIGs_genes_theta(one50, one50_files, "150") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_150)
+two00_MIGs_genes <- get_number_MIGs_genes_theta(two00, two00_files, "200") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_200)
+three00_MIGs_genes <- get_number_MIGs_genes_theta(three00, three00_files, "300") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_300)
+four00_MIGs_genes <- get_number_MIGs_genes_theta(four00, four00_files, "400") %>% filter(sampleID=="A1") %>% pull (no_MIGs_theta_juncs_400)
 
 number_MIGs_with_IR_genes <- data.frame(sample_size = c(25, 50, 100, 150, 200, 300, 400), 
                             number_MIGs_theta=c(twenty5_MIGs_genes, fifty_MIGs_genes, one00_MIGs_genes, one50_MIGs_genes, two00_MIGs_genes, three00_MIGs_genes, four00_MIGs_genes))
@@ -176,7 +176,7 @@ all <- left_join(four00_MIGs_mean, three00_MIGs_mean) %>% left_join(two00_MIGs_m
 ######################-----Plot-----##########################
 ########################################################################
 
-######################-----MIGs with IR in RD268-----##########################
+######################-----MIGs with IR in A1-----##########################
 
 all$mean_400 <- mean(all$`no_MIGs_theta_juncs_400`)
 all$mean_300 <- mean(all$`no_MIGs_theta_juncs_300`, na.rm = T)
