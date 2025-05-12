@@ -44,7 +44,7 @@ Please input ONE string from the three options below.
 The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
 
 ## run_results_paper
-This folder contains the code for the main and supplemental figures of my manuscript (except Figure 1). 
+This folder contains the code for the main and supplemental figures of my manuscript (except Figure 1, which was made using Excel). 
 
 ### Installation
 Please install the conda environments with:
@@ -78,6 +78,47 @@ size_run_dir: "/file/path/to/directory/with/different/iterations/of/FRASER/acros
 
 ### Running run_results_paper
 -Go to the run_results_paper/workflow directory
+
+-run the following command:
+```
+./run_snakemake --config_file "/path/to/config/yaml" --profile "path/to/config/slurm_scg"
+```
+
+The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
+
+## run_results_review
+This folder contains the code for the main and supplemental figures of the review of my manuscript (except Figure S1, which was made using Excel). 
+
+### Installation
+Please install the conda environments with:
+```
+micromamba create -f /path/to/fraser1.yml
+micromamba create -f /path/to/fraser2.yml
+```
+
+The yml files can be found at:
+```
+run_results_review/conda_envs
+```
+
+### Setting up configurations
+-Make a config.yaml file in the config folder with the following information
+```
+FRASER1_results_uncompiled: "/file/path/to/raw/FRASER/output.csv"
+input_file_FRASER: "/file/path/to/csv/with/filepaths/and/ids/of/all/samples/run/in/FRASER.csv"
+FRASER2_results_uncompiled: "/file/path/to/raw/FRASER2/output.csv"
+input_file_FRASER2: "/file/path/to/csv/with/filepaths/and/ids/of/all/samples/run/in/FRASER2.csv"
+metadata_file: "/file/path/to/metadata/file.csv"
+mig_file: "/file/path/to/Homo_sapiens_gene.csv"
+output_directory: "/file/path/to/desired/output/directory"
+genesets: "/file/path/to/directory/with/genesets"
+genes: "/file/path/to/FRASER/output/rds/file.rds"
+genes_FRASER2: "/file/path/to/FRASER2/output/rds/file.rds"
+size_run_dir: "/file/path/to/directory/with/different/iterations/of/FRASER/across/different/run/sizes"
+```
+
+### Running run_results_paper
+-Go to the run_results_review/workflow directory
 
 -run the following command:
 ```
