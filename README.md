@@ -27,11 +27,11 @@ input_directory: "/file/path/where/you/want/to/symlink/data/to"
 file_list: "/csv/file/where/you/have/list/of/files/to/run.csv"
 FRASER_type: "Both" OR "FRASER" OR "FRASER2" (see note below)
 ```
-FRASER_type input options:
-Please input ONE string from the three options below.
--"FRASER": to indicate you want to run FRASER with the outputs of theta, psi3, and psi5
--"FRASER2": to indicate you want to run FRASER with the Jaccard index output
--"Both": to indicate you want to receive all four outputs
+FRASER_type input options:  
+Please input ONE string from the three options below.  
+-"FRASER": to indicate you want to run FRASER with the outputs of theta, psi3, and psi5  
+-"FRASER2": to indicate you want to run FRASER with the Jaccard index output  
+-"Both": to indicate you want to receive all four outputs  
 
 ### Running FRASER
 -Go to the FRASER_snakemake/workflow directory
