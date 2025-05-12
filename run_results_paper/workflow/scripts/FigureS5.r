@@ -40,9 +40,9 @@ A1_genes <- all_outliers %>% filter(sampleID == "A1") %>% filter(padjust < 0.05)
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
 B1_genes <- all_outliers %>% filter(sampleID == "B1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-UDN550488_genes  <- all_outliers %>% filter(sampleID == "C1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+C1_genes  <- all_outliers %>% filter(sampleID == "C1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-UDN238929_genes  <- all_outliers %>% filter(sampleID == "C2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+C2_genes  <- all_outliers %>% filter(sampleID == "C2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
 D1_genes  <- all_outliers %>% filter(sampleID == "D1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
