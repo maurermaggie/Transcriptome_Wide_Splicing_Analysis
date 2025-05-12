@@ -32,27 +32,27 @@ MIGs_Jaccard <- all_outliers %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)
 MIGs_Jaccard_count <- MIGs_Jaccard %>% group_by(sampleID) %>% tally %>% arrange(desc(n))
 mean(MIGs_Jaccard_count$n) + sd(MIGs_Jaccard_count$n) + sd(MIGs_Jaccard_count$n)
 
-RD268 <- (MIGs_Jaccard_count %>% filter(sampleID == "RD268") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-GSS225379 <- (MIGs_Jaccard_count %>% filter(sampleID == "GSS225379") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-UDN550488  <- (MIGs_Jaccard_count %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-UDN238929  <- (MIGs_Jaccard_count %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-RD380  <- (MIGs_Jaccard_count %>% filter(sampleID == "RD380") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-RD143 <- (MIGs_Jaccard_count %>% filter(sampleID == "RD143") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
-RD140 <- (MIGs_Jaccard_count %>% filter(sampleID == "RD140") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+A1 <- (MIGs_Jaccard_count %>% filter(sampleID == "A1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+B1 <- (MIGs_Jaccard_count %>% filter(sampleID == "B1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+C1  <- (MIGs_Jaccard_count %>% filter(sampleID == "C1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+C2  <- (MIGs_Jaccard_count %>% filter(sampleID == "C2") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+D1  <- (MIGs_Jaccard_count %>% filter(sampleID == "D1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+E1 <- (MIGs_Jaccard_count %>% filter(sampleID == "E1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
+F1 <- (MIGs_Jaccard_count %>% filter(sampleID == "F1") %>% pull(n) - mean(MIGs_Jaccard_count$n))/ sd(MIGs_Jaccard_count$n)
 
-RD268_genes <- all_outliers %>% filter(sampleID == "RD268") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+A1_genes <- all_outliers %>% filter(sampleID == "A1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-GSS225379_genes <- all_outliers %>% filter(sampleID == "GSS225379") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+B1_genes <- all_outliers %>% filter(sampleID == "B1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-UDN550488_genes  <- all_outliers %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+C1_genes  <- all_outliers %>% filter(sampleID == "C1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-UDN238929_genes  <- all_outliers %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+C2_genes  <- all_outliers %>% filter(sampleID == "C2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-RD380_genes  <- all_outliers %>% filter(sampleID == "RD380") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+D1_genes  <- all_outliers %>% filter(sampleID == "D1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-RD143_genes  <- all_outliers %>% filter(sampleID == "RD143") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+E1_genes  <- all_outliers %>% filter(sampleID == "E1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
-RD140_genes  <- all_outliers %>% filter(sampleID == "RD140") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
+F1_genes  <- all_outliers %>% filter(sampleID == "E2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>% pull(hgncSymbol) %>% unique %>% length
 
 
@@ -73,11 +73,11 @@ y_lab <- expression("Number of Jaccard Index Outlier Junctions in MIGs")
 MIGs_Jaccard_count$numbers <- rownames(MIGs_Jaccard_count)
 colnames(MIGs_Jaccard_count) <- c("sampleID", "no_theta_juncs_in_MIGs", "numbers")
 
-RNU4ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
+RNU4ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
 RNU4ATAC$type <- "RNU4ATAC-opathy"
-RNU6ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("RD380"))
+RNU6ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("D1"))
 RNU6ATAC$type <- "RNU6ATAC-opathy"
-non_RNU4ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam", "RD380"))
+non_RNU4ATAC <- MIGs_Jaccard_count %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("A1", "B1", "C1", "C2", "D1"))
 non_RNU4ATAC$type <- NA
 
 joined <- bind_rows(RNU4ATAC, non_RNU4ATAC, RNU6ATAC)
