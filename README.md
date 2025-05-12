@@ -67,12 +67,10 @@ FRASER2_results_uncompiled: "/file/path/to/raw/FRASER2/output.csv"
 input_file_FRASER2: "/file/path/to/csv/with/filepaths/and/ids/of/all/samples/run/in/FRASER2.csv"
 metadata_file: "/file/path/to/metadata/file.csv"
 mig_file: "/file/path/to/Homo_sapiens_gene.csv"
-low_RIN: "/file/path/to/csv/with/samples/to/exclude/due/to/low/RIN.csv"
 output_directory: "/file/path/to/desired/output/directory"
 genesets: "/file/path/to/directory/with/genesets"
 genes: "/file/path/to/FRASER/output/rds/file.rds"
 genes_FRASER2: "/file/path/to/FRASER2/output/rds/file.rds"
-missing: "/file/path/to/csv/with/samples/to/exclude/due/to/missing/metadata.csv"
 size_run_dir: "/file/path/to/directory/with/different/iterations/of/FRASER/across/different/run/sizes"
 ```
 
