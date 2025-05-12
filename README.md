@@ -1,7 +1,7 @@
 # Transcriptome_Wide_Splicing_Analysis
 
 ## FRASER_snakemake
-This folder contains my Snakemake pipeline for running FRASER (and not FRASER2 at the moment).
+This folder contains my Snakemake pipeline for running FRASER and FRASER2.
 
 ### Installation
 Please install the conda environments with:
