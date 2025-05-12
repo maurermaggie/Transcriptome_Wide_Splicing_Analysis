@@ -28,8 +28,8 @@ MIG_table_select <- MIG_table_select %>% filter(gene_class == "MIG") %>% pull(ge
 ########################################################################
 ###################-----All RNU4ATAC v RNU6ATAC-----####################
 ########################################################################
-RNU4ATAC <- c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam")
-RNU6ATAC <- c("RD380")
+RNU4ATAC <- c("A1", "B1", "C1", "C2")
+RNU6ATAC <- c("D1")
 
 all_RNU4ATAC <- all_uncompiled %>% filter(sampleID %in% RNU4ATAC) %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
