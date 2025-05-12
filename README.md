@@ -128,7 +128,7 @@ size_run_dir: "/file/path/to/directory/with/different/iterations/of/FRASER/acros
 The files in the slurm_scg directory will allow the snakemake to be run with resources on Stanford's scg/ oak
 
 ## misc_scripts
-This folder contains the code for Figure 1, the creation of the metadata file, and a comparison of novel samples vs samples in Ungar et al., 2024 (PMID: PMC10802764).
+This folder contains miscellaneous scripts, such as the code for Figure 1, the creation of the metadata file, and a comparison of novel samples vs samples in Ungar et al., 2024 (PMID: PMC10802764).
 
 ## Gene Information
 Contains the gene sets used in the manuscript. They were originally from Cormier, et al., 2022 (PMID: 36376793) and can also be found at https://github.com/macarthur-lab/gene_lists
