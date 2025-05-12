@@ -5,8 +5,7 @@ library(tidyverse)
 
 args <- commandArgs(TRUE)
 input_directory <- args[1]
-data_type <- args[2]
-output_directory <- args[3]
+output_directory <- args[2]
 
 files <- list.files(input_directory)
 bam_files <- str_subset(files, "bam$")
