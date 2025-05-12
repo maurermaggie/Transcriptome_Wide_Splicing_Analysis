@@ -33,25 +33,25 @@ MIG_table_select <- MIG_table_select %>% filter(gene_class == "MIG") %>% pull(ge
 ########################################################################
 ###################-----All RNU4ATAC Upset Plot-----####################
 ########################################################################
-RD268 <- all_uncompiled %>% filter(sampleID == "RD268") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+A1 <- all_uncompiled %>% filter(sampleID == "A1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-GSS225379 <- all_uncompiled %>% filter(sampleID == "GSS225379") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+B1 <- all_uncompiled %>% filter(sampleID == "B1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-UDN550488 <- all_uncompiled %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+C1 <- all_uncompiled %>% filter(sampleID == "C1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-UDN238929 <- all_uncompiled %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+C2 <- all_uncompiled %>% filter(sampleID == "C2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
 
-gene_list <- c(RD268, GSS225379, UDN550488, UDN238929) %>% unique 
+gene_list <- c(A1, B1, C1, C2) %>% unique 
 genes <- data.frame(gene_list)
-genes$A1 <- ifelse(genes$gene_list %in% RD268, TRUE, FALSE)
-genes$B1 <- ifelse(genes$gene_list %in% GSS225379, TRUE, FALSE)
-genes$C1 <- ifelse(genes$gene_list %in% UDN550488, TRUE, FALSE)
-genes$C2 <- ifelse(genes$gene_list %in% UDN238929, TRUE, FALSE)
+genes$A1 <- ifelse(genes$gene_list %in% A1, TRUE, FALSE)
+genes$B1 <- ifelse(genes$gene_list %in% B1, TRUE, FALSE)
+genes$C1 <- ifelse(genes$gene_list %in% C1, TRUE, FALSE)
+genes$C2 <- ifelse(genes$gene_list %in% C2, TRUE, FALSE)
 rownames(genes) <- genes$gene_list
 #genes <- genes %>% select(-gene_list)
 y_lab <- expression("Number of Shared MIGs with" ~ theta ~ "outliers")
