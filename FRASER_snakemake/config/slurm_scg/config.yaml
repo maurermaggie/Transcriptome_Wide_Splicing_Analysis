@@ -15,7 +15,7 @@ cluster:
 default-resources:
   - partition=batch
   - account=smontgom
-  - time="96:00:00"
+  - time="102:00:00"
   - mem="512GB"
   - nodes=1
   - threads=1
