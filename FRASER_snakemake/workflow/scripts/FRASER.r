@@ -16,11 +16,11 @@ sampleTable[,bamFile:=bamFiles]
 
 settings <- FraserDataSet(colData=sampleTable, workingDir=output_directory)
 
-if(.Platform$OS.type == "unix") {
-register(MulticoreParam(workers=min(30, multicoreWorkers())))
-} else {
-register(SnowParam(workers=min(30, multicoreWorkers())))
-}
+#if(.Platform$OS.type == "unix") {
+#register(MulticoreParam(workers=min(30, multicoreWorkers())))
+#} else {
+#register(SnowParam(workers=min(30, multicoreWorkers())))
+#}
 
 #this next line is the only part of the script that could be parallelized
 #but it would be complicated because you would need to grab the n number from the sample file and makes sure thay all have the same
@@ -30,6 +30,8 @@ fds <- countRNAData(settings, recount = TRUE)
 fds <- calculatePSIValues(fds)
 
 fds_filtered <- filterExpressionAndVariability(fds, minExpressionInOneSample=20, minDeltaPsi=0.0, filter=TRUE)
+filename_filtered <- paste0(output_directory, "/FRASER_gene_information.rds", sep="")
+saveRDS(fds_filtered, filename_filtered)
 
 #you would think that these 6 commands could be parallelized, but if you do, you will have to save the data (which takes hours) and reload it after the
 #6 lines (which also takes hours), so it's actually faster not to parallelize this. 
