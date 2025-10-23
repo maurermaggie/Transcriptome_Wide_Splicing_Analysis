@@ -33,6 +33,24 @@ Please input ONE string from the three options below.
 -"FRASER2": to indicate you want to run FRASER with the Jaccard index output  
 -"Both": to indicate you want to receive all four outputs  
 
+The file_list is a .csv that contains one column (without a header) where every row is a complete filepath to the .bam or .bai files for your analysis cohort. Every individual in your cohort must have two lines in the file_list- one for the .bam file and one for the .bai file. 
+
+The first 12 lines of a file_list (csv) may look like this:
+```
+/desktop/STAROutput/genome/A1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/A1_star_hg38_Aligned.sortedByCoord.out.bai
+/desktop/STAROutput/genome/B1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/B1_star_hg38_Aligned.sortedByCoord.out.bai
+/desktop/STAROutput/genome/C1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/C1_star_hg38_Aligned.sortedByCoord.out.bai
+/desktop/STAROutput/genome/D1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/D1_star_hg38_Aligned.sortedByCoord.out.bai
+/desktop/STAROutput/genome/E1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/E1_star_hg38_Aligned.sortedByCoord.out.bai
+/desktop/STAROutput/genome/F1_star_hg38_Aligned.sortedByCoord.out.bam
+/desktop/STAROutput/genome/F1_star_hg38_Aligned.sortedByCoord.out.bai
+```
+
 ### Running FRASER
 -Go to the FRASER_snakemake/workflow directory
 
