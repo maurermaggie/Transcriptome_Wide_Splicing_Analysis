@@ -438,7 +438,7 @@ ENST %>% filter(ENST_minor_by_junc_Z_score> 2)
 
 final_fibro <- inner_join(minor_IR, MIGs_w_minor_IR)
 
-write_csv(final_fibro, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/minor_IR_counts.csv")
+write_csv(final_fibro, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/fibro_minor_IR_counts.csv")
 
 #######################################----Blood----##################################################
 read_csv_rename <- function(fp, name) {
@@ -472,6 +472,6 @@ ENST %>% filter(ENST_minor_by_junc_Z_score> 2)
 
 final_blood <- inner_join(minor_IR, MIGs_w_minor_IR)
 
-write_csv(final_blood, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/minor_IR_counts.csv")
+write_csv(final_blood, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/blood_minor_IR_counts.csv")
 
 
