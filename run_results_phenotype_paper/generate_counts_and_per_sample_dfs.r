@@ -4,106 +4,25 @@ library(biomaRt)
 library(tidyverse)
 require(data.table)
 
-fibro_theta_FRASER_output_fp <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibroblasts_theta.csv"
-fibro_theta_FRASER_output <- read_csv(fibro_theta_FRASER_output_fp)
+############################################################################################################
+###################################----Read in dataframes----###############################################
+############################################################################################################
+#Fibroblast data - input and output
+    #you need the input because FRASER output doesn't include samples with 0 outliers
+fibro_theta_FRASER_output <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibroblasts_theta.csv")
+fibro_FRASER_input <- read_excel("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibroblast_input.xlsx")
 
-fibro_FRASER_input_fp <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibroblast_input.xlsx"
-fibro_FRASER_input <- read_excel(fibro_FRASER_input_fp)
-
-blood_FRASER_output_fp <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/output/output_drafts/FRASER_no_missing_rm_seqbatch_8/FRASER_output.csv"
-blood_FRASER_output <- read_csv(blood_FRASER_output_fp)
-
-blood_FRASER_input_fp <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/output/output_drafts/FRASER_no_missing_rm_seqbatch_8/FRASER_input.csv"
-blood_FRASER_input <- read_csv(blood_FRASER_input_fp)
+#Blood data - input and output
+    #you need the input because FRASER output doesn't include samples with 0 outliers
+blood_FRASER_output <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/output/output_drafts/FRASER_no_missing_rm_seqbatch_8/FRASER_output.csv")
+blood_FRASER_input <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/output/output_drafts/FRASER_no_missing_rm_seqbatch_8/FRASER_input.csv")
 
 #MIDB file used for filtering on Dec 2nd, 2025
-MIDB_all_fp <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/Homo_sapiens_intron.csv" 
-MIDB_all <- read_csv(MIDB_all_fp) 
-
-#MIDB file used for filtering on Apr 9th, 2025 - not sure why it is missing data found in homo_sapiens_MIDB_all
-#Jialan_MIDB <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/Jialan_Dec_2_updated_minor_intron.csv")
-
-#on Apr 9th, 2025, Jialan only analyzed outliers with deltaPsi > 0.3
-fibro_filtered_05_abs3 <- fibro_theta_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3)
-#fibro_filtered_05_pos3 <- fibro_theta_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3)
-#fibro_filtered_05_neg3 <- fibro_theta_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3)
-
-blood_filtered_05_abs3 <- blood_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3) %>% filter(type == "theta")
-#blood_filtered_05_pos3 <- blood_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3) %>% filter(type == "theta")
-#blood_filtered_05_neg3 <- blood_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3) %>% filter(type == "theta")
-
-#MIDB_minor <- MIDB_all %>% filter(intron_class == "minor")
-#Jialan_MIDB_minor <- Jialan_MIDB %>% filter(intron_class == "minor")
+MIDB_all <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/Homo_sapiens_intron.csv") 
 
 ############################################################################################################
 ########################################----Functions----###################################################
 ############################################################################################################
-get_level <- function(filter_on_minor, gene_junction_tx_level, filter_by_junction_values) {
-        if (gene_junction_tx_level == "gene"){  
-            if (filter_on_minor == TRUE) {
-                level <- "MIGs_w_theta_outliers"
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "_in_minor_introns")
-                } else {
-                    level <- level
-                }
-            } 
-            if (filter_on_minor == FALSE) {
-                level <- "non_major_genes_w_theta_outliers"
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "_in_non_major_introns")
-                } else {
-                    level <- level
-                }
-            }
-        }
-
-        if (gene_junction_tx_level == "junction"){
-            level <- "theta_outliers_in_"
-
-            if (filter_on_minor == TRUE) {
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "minor_introns")
-                } else {
-                    level <- paste0(level, "MIGs")
-                }
-            } 
-
-            if (filter_on_minor == FALSE) {
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "non_major_introns")
-                } else {
-                    level <- paste0(level, "non_major_genes")
-                }
-            }
-
-        }
-
-        if (gene_junction_tx_level == "ENST"){
-            level <- "ENST_transcripts_w_theta_outliers_in"
-
-            if (filter_on_minor == TRUE) {
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "_minor_introns")
-                } else {
-                    level <- paste0(level, "_MIGs")
-                }
-            } 
-
-            if (filter_on_minor == FALSE) {
-                if (filter_by_junction_values == TRUE) {
-                    level <- paste0(level, "_non_major_introns")
-                } else {
-                    level <- paste0(level, "_non_major_genes")
-                }
-            }
-
-        }
-
-        level
-
-}
-
 make_outlier_df_gene <- function(filtered_tables, filepath) {   
     if (!dir.exists(filepath)) {
         dir.create(filepath, recursive = TRUE)
@@ -175,27 +94,6 @@ make_outlier_df_junction <- function(filtered_tables, filepath) {
     }
 }
 
-make_outlier_df_tx <- function(filtered_tables, filepath) { 
-    if (!dir.exists(filepath)) {
-        dir.create(filepath, recursive = TRUE)
-    }
-
-    filenumber <- length(list.files(filepath))
- 
-    ids_w_outliers <- filtered_tables$sampleID %>% unique
-    ids_w_outliers_count <- filtered_tables %>% pull(sampleID) %>% unique() %>% length()
-
-    if (filenumber < ids_w_outliers_count) {
-        for (i in ids_w_outliers) {
-        ind_tx_df_sample <- filtered_tables %>% filter(sampleID == i)   
-        ind_tx_df_sample_unique <- ind_tx_df_sample %>% select(transcript_key) %>% unique()
-
-        filepath_sample <- paste0(filepath, "/", i, ".csv")
-        write_csv(ind_tx_df_sample_unique, filepath_sample)
-        }
-    }
-}
-
 get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(dir_path, level_name, "/unique_gene_counts.csv")
     if (!file.exists(count_output_fp)) {
@@ -224,40 +122,22 @@ get_junctions_count_df <- function(filtered_table, input_sid, level_name, dir_pa
     } 
 }
 
-get_enst_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
-    count_output_fp <- paste0(dir_path, level_name, "/unique_ENST_transcript_counts.csv")
-    if (!file.exists(count_output_fp)) {
-        txs <- filtered_table %>% select(sampleID, transcript_key) %>% unique %>% group_by(sampleID) %>% tally %>% arrange(desc(n))
-        zero_count_samples <- input_sid %>% filter(! sampleID %in% filtered_table$sampleID)
-        zero_count_samples$n <- 0
-        count_joined <- bind_rows(txs, zero_count_samples)
-        count_joined_sdv <- count_joined %>% mutate(Z_score = (n - mean(n)) / sd(n)) %>%
-            arrange(sampleID)
-        write_csv(count_joined_sdv, count_output_fp)
-        count_joined_sdv
-    }
-}
-
 main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_intron_file, dir_path, FRASER_output_fp, FRASER_input_fp, MIG_fp) {
     ###############----Define all levels----##############
-    gene_minor_juncfiltered <- get_level(TRUE, "gene", TRUE)
-    gene_minor_NONfiltered <- get_level(TRUE, "gene", FALSE)
-    gene_nonmajor_juncfiltered <- get_level(FALSE, "gene", TRUE)
-    gene_nonmajor_NONfiltered <- get_level(FALSE, "gene", FALSE)
+    gene_minor_juncfiltered <- "MIGs_w_theta_outliers_in_minor_introns"
+    gene_minor_NONfiltered <- "MIGs_w_theta_outliers"
+    gene_nonmajor_juncfiltered <- "non_major_genes_w_theta_outliers_in_non_major_introns"
+    gene_nonmajor_NONfiltered <- "non_major_genes_w_theta_outliers"
 
-    junc_minor_juncfiltered <- get_level(TRUE, "junction", TRUE)
-    junc_minor_NONfiltered <- get_level(TRUE, "junction", FALSE)
-    junc_nonmajor_juncfiltered <- get_level(FALSE, "junction", TRUE)
-    junc_nonmajor_NONfiltered <- get_level(FALSE, "junction", FALSE)
-
-    tx_minor_juncfiltered <- get_level(TRUE, "ENST", TRUE)
-    tx_nonmajor_juncfiltered <- get_level(FALSE, "ENST", TRUE)
+    junc_minor_juncfiltered <- "theta_outliers_in_minor_introns"
+    junc_minor_NONfiltered <- "theta_outliers_in_MIGs"
+    junc_nonmajor_juncfiltered <- "theta_outliers_in_non_major_introns"
+    junc_nonmajor_NONfiltered <- "theta_outliers_in_non_major_genes"
 
     level <- list(gene_minor_juncfiltered, gene_minor_NONfiltered, 
                         gene_nonmajor_juncfiltered, gene_nonmajor_NONfiltered,
                         junc_minor_juncfiltered, junc_minor_NONfiltered,
-                        junc_nonmajor_juncfiltered, junc_nonmajor_NONfiltered,
-                        tx_minor_juncfiltered, tx_nonmajor_juncfiltered)
+                        junc_nonmajor_juncfiltered, junc_nonmajor_NONfiltered)
     
     ###############----Make output directories----##############
     for (i in level) {
@@ -318,12 +198,6 @@ main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_int
                                        end == intron_end|  end == intron_end-1 | end == intron_end+1) %>% 
                                        select(sampleID, gene_symbol, intron_name, intron_start, intron_end, start, end, intron_class, pValue, padjust, 
                                        zScore, psiValue, deltaPsi, meanCounts, meanTotalCounts, counts, totalCounts) %>% unique #this is an input for the counts function, ect.
-    
-    MIGs_joined_filter_on_start_end_tx_key <- MIGs_joined %>% filter(intron_class == "minor") %>% 
-                                       filter(start == intron_start | start == intron_start-1 | start == intron_start+1 |
-                                       end == intron_end|  end == intron_end-1 | end == intron_end+1) %>% 
-                                       select(sampleID, gene_symbol, intron_name, intron_start, intron_end, start, end, intron_class, pValue, padjust, 
-                                       zScore, psiValue, deltaPsi, meanCounts, meanTotalCounts, counts, totalCounts, transcript_key) %>% unique
 
     ####Filter FRASER results to non-major
     non_major_joined_filter_on_start_end <- non_major_joined %>% 
@@ -331,12 +205,6 @@ main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_int
                                        end == intron_end|  end == intron_end-1 | end == intron_end+1) %>% 
                                        select(sampleID, gene_symbol, intron_name, intron_start, intron_end, start, end, intron_class, pValue, padjust, 
                                        zScore, psiValue, deltaPsi, meanCounts, meanTotalCounts, counts, totalCounts) %>% unique #this is an input for the counts function, ect.
-
-    non_major_joined_filter_on_start_end_tx_key <- non_major_joined %>% 
-                                       filter(start == intron_start | start == intron_start-1 | start == intron_start+1 |
-                                       end == intron_end|  end == intron_end-1 | end == intron_end+1) %>% 
-                                       select(sampleID, gene_symbol, intron_name, intron_start, intron_end, start, end, intron_class, pValue, padjust, 
-                                       zScore, psiValue, deltaPsi, meanCounts, meanTotalCounts, counts, totalCounts, transcript_key) %>% unique #this is an input for the counts function, ect.
 
     #########################----get gene/ junction/ transcript counts----#######################
     get_genes_count_df(MIGs_joined_filter_on_start_end, FRASER_input_files, level[1], dir_path)
@@ -349,9 +217,6 @@ main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_int
     get_junctions_count_df(non_major_joined_filter_on_start_end, FRASER_input_files, level[7], dir_path)
     get_junctions_count_df(filtered_FRASER_results_non_major, FRASER_input_files, level[8], dir_path)
 
-    get_enst_count_df(MIGs_joined_filter_on_start_end_tx_key, FRASER_input_files, level[9], dir_path)
-    get_enst_count_df(non_major_joined_filter_on_start_end_tx_key, FRASER_input_files, level[10], dir_path)
-
     #########################----get gene counts----#######################
     make_outlier_df_gene(MIGs_joined_filter_on_start_end, paste0(dir_path, level[1], "/unique_genes_per_sample"))
     make_outlier_df_gene(filtered_FRASER_results_MIGs, paste0(dir_path, level[2], "/unique_genes_per_sample"))
@@ -362,9 +227,6 @@ main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_int
     make_outlier_df_junction(filtered_FRASER_results_MIGs, paste0(dir_path, level[6], "/unique_junctions_per_sample"))
     make_outlier_df_junction(non_major_joined_filter_on_start_end, paste0(dir_path, level[7], "/unique_junctions_per_sample"))
     make_outlier_df_junction(filtered_FRASER_results_non_major, paste0(dir_path, level[8], "/unique_junctions_per_sample"))
-
-    make_outlier_df_tx(MIGs_joined_filter_on_start_end_tx_key, paste0(dir_path, level[9], "/unique_ENST_transcripts_per_sample"))
-    make_outlier_df_tx(non_major_joined_filter_on_start_end_tx_key, paste0(dir_path, level[10], "/unique_ENST_transcripts_per_sample"))
 
     readme_simple <- c(
         "# Run completed on:",
@@ -383,95 +245,16 @@ main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_int
 ############################################################################################################
 #######################################----Get results----##################################################
 ############################################################################################################
+fibro_filtered_05_abs3 <- fibro_theta_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3)
+
+blood_filtered_05_abs3 <- blood_FRASER_output %>% filter(padjust <= 0.05) %>% filter(abs(deltaPsi) >= 0.3) %>% filter(type == "theta")
 
 #######################################----Fibroblasts----##################################################
-dirpath_fibro <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3_try2/"
+dirpath_fibro <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3_Jan_28/"
 main_function(fibro_filtered_05_abs3, fibro_FRASER_input, MIDB_all, dirpath_fibro, fibro_theta_FRASER_output_fp, fibro_FRASER_input_fp, MIDB_all_fp)
 test %>% unique %>% group_by(sampleID) %>% tally %>% arrange(desc(n))
-
-filtered_FRASER_results <- fibro_filtered_05_abs3
-FRASER_input_files <- fibro_FRASER_input
-minor_intron_file <- MIDB_all
-dir_path <- dirpath_fibro
-FRASER_output_fp <- fibro_theta_FRASER_output_fp
-FRASER_input_fp <- fibro_FRASER_input_fp
-MIG_fp <- MIDB_all_fp
 
 #######################################----Fibroblasts----##################################################
 dirpath_blood <- "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3_try2/"
 blood_FRASER_input <- blood_FRASER_input %>% select(sampleID) %>% unique
 main_function(blood_filtered_05_abs3, blood_FRASER_input, MIDB_all, dirpath_blood, blood_FRASER_output_fp, blood_FRASER_input_fp, MIDB_all_fp)
-
-############################################################################################################
-#####################################----Combine counts----#################################################
-############################################################################################################
-
-#######################################----Fibroblasts----##################################################
-read_csv_rename <- function(fp, name) {
-    file <- read_csv(fp)
-    colnames(file) <- c("sampleID", paste0(name, "_n"), paste0(name, "_Z_score"))
-    file
-}
-
-###--ENSG txs
-ENST_minor_by_junc <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/ENST_transcripts_w_theta_outliers_in_minor_introns/unique_ENST_transcript_counts.csv", "ENST_minor_by_junc")
-ENST_non_major_by_junc <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/ENST_transcripts_w_theta_outliers_in_non_major_introns/unique_ENST_transcript_counts.csv", "ENST_non_major_by_junc")
-ENST <- inner_join(ENST_minor_by_junc, ENST_non_major_by_junc)
-
-###--Genes
-MIGs_w_minor_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/MIGs_w_theta_outliers_in_minor_introns/unique_gene_counts.csv", "MIGs_w_minor_IR")
-MIGs_w_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/MIGs_w_theta_outliers/unique_gene_counts.csv", "MIGs_w_IR")
-non_major_genes_w_non_major_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/non_major_genes_w_theta_outliers_in_non_major_introns/unique_gene_counts.csv", "non_major_genes_w_non_major_IR")
-non_major_genes_w_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/non_major_genes_w_theta_outliers/unique_gene_counts.csv", "non_major_genes_w_IR")
-genes <- inner_join(MIGs_w_minor_IR, MIGs_w_IR) %>% inner_join(non_major_genes_w_non_major_IR) %>% inner_join(non_major_genes_w_IR)
-
-###--Junctions
-minor_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/theta_outliers_in_minor_introns/unique_junction_counts.csv", "minor_IR")
-IR_in_MIGs <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/theta_outliers_in_MIGs/unique_junction_counts.csv", "IR_in_MIGs")
-non_major_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/theta_outliers_in_non_major_introns/unique_junction_counts.csv", "non_major_IR")
-IR_in_non_major_genes <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/theta_outliers_in_non_major_genes/unique_junction_counts.csv", "IR_in_non_major_genes")
-junctions <- inner_join(minor_IR, IR_in_MIGs) %>% inner_join(non_major_IR) %>% inner_join(IR_in_non_major_genes)
-
-junctions %>% filter(minor_IR_Z_score > 2 | IR_in_MIGs_Z_score > 2)
-genes %>% filter(MIGs_w_minor_IR_Z_score> 2 | MIGs_w_IR_Z_score > 2)
-ENST %>% filter(ENST_minor_by_junc_Z_score> 2)
-
-final_fibro <- inner_join(minor_IR, MIGs_w_minor_IR)
-
-write_csv(final_fibro, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/fibro_filtered_05_abs3/fibro_minor_IR_counts.csv")
-
-#######################################----Blood----##################################################
-read_csv_rename <- function(fp, name) {
-    file <- read_csv(fp)
-    colnames(file) <- c("sampleID", paste0(name, "_n"), paste0(name, "_Z_score"))
-    file
-}
-
-###--ENSG txs
-ENST_minor_by_junc <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/ENST_transcripts_w_theta_outliers_in_minor_introns/unique_ENST_transcript_counts.csv", "ENST_minor_by_junc")
-ENST_non_major_by_junc <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/ENST_transcripts_w_theta_outliers_in_non_major_introns/unique_ENST_transcript_counts.csv", "ENST_non_major_by_junc")
-ENST <- inner_join(ENST_minor_by_junc, ENST_non_major_by_junc)
-
-###--Genes
-MIGs_w_minor_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/MIGs_w_theta_outliers_in_minor_introns/unique_gene_counts.csv", "MIGs_w_minor_IR")
-MIGs_w_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/MIGs_w_theta_outliers/unique_gene_counts.csv", "MIGs_w_IR")
-non_major_genes_w_non_major_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/non_major_genes_w_theta_outliers_in_non_major_introns/unique_gene_counts.csv", "non_major_genes_w_non_major_IR")
-non_major_genes_w_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/non_major_genes_w_theta_outliers/unique_gene_counts.csv", "non_major_genes_w_IR")
-genes <- inner_join(MIGs_w_minor_IR, MIGs_w_IR) %>% inner_join(non_major_genes_w_non_major_IR) %>% inner_join(non_major_genes_w_IR)
-
-###--Junctions
-minor_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/theta_outliers_in_minor_introns/unique_junction_counts.csv", "minor_IR")
-IR_in_MIGs <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/theta_outliers_in_MIGs/unique_junction_counts.csv", "IR_in_MIGs")
-non_major_IR <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/theta_outliers_in_non_major_introns/unique_junction_counts.csv", "non_major_IR")
-IR_in_non_major_genes <- read_csv_rename("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/theta_outliers_in_non_major_genes/unique_junction_counts.csv", "IR_in_non_major_genes")
-junctions <- inner_join(minor_IR, IR_in_MIGs) %>% inner_join(non_major_IR) %>% inner_join(IR_in_non_major_genes)
-
-junctions %>% filter(minor_IR_Z_score > 2 | IR_in_MIGs_Z_score > 2)
-genes %>% filter(MIGs_w_minor_IR_Z_score> 2 | MIGs_w_IR_Z_score > 2)
-ENST %>% filter(ENST_minor_by_junc_Z_score> 2)
-
-final_blood <- inner_join(minor_IR, MIGs_w_minor_IR)
-
-write_csv(final_blood, "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Projects/Fibroblast_RNU6ATAC/blood_filtered_05_abs3/blood_minor_IR_counts.csv")
-
-
