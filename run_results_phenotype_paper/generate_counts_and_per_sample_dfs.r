@@ -31,7 +31,7 @@ MIDB_all <- read_csv(MIDB_all_fp)
 ##########################################----Functions----#################################################
 ############################################################################################################
 
-###################################----convert_to_gene_names----############################################
+#####################################----convert_to_gene_names----##########################################
 RATIONAL:
     #the fibroblast FRASER output from the Broad included ENSGs as its output in the hgncSymbol column INSTEAD of hgnc symbols/ gene names
         #so, this function converts ENSGs to hgnc symbols/ gene names
@@ -115,7 +115,7 @@ make_outlier_df_gene <- function(filtered_tables, filepath) {
     }
 } 
 
-####################################----get_genes_count_df----##############################################
+######################################----get_genes_count_df----############################################
 #INPUT: 
     #filtered_tables: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
         #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
@@ -146,7 +146,7 @@ get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) 
     }
 }
 
-#################################----get_junctions_count_df----##############################################
+####################################----get_junctions_count_df----###########################################
 #INPUT: 
     #filtered_tables: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
         #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
@@ -161,7 +161,7 @@ get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) 
         #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
             #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
             #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
-        #Z_score: the Z-score for that sample taken from the mean and sd of the n column\
+        #Z_score: the Z-score for that sample taken from the mean and sd of the n column
 
 get_junctions_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(level_name, "unique_junction_counts.csv")
@@ -176,6 +176,29 @@ get_junctions_count_df <- function(filtered_table, input_sid, level_name, dir_pa
         count_joined_sdv
     } 
 }
+
+#################################----change_colnames_bind_rows----###########################################
+#INPUT: 
+    #intron: the intron type you want to filter the MIDB file by 
+        #this will do through every intron type in the MIDB database in for loops in main_function
+    #MIDB_file: the file from the MIDB database read in earlier via read_csv
+    #FRASER_results_filtered: the results of FRASER given to the main function
+        #this should ALREADY be filtered for the padjust, deltaPsi, and type of your choice
+    #FRASER_input: a csv file with one column (labeled sampleID) where every row contains the sampleID assocaited with the bam file
+        #that was inputted in the FRASER pipeline
+    #dir_path: 
+        #the path you want the outputs of get_genes_count_df and, if focusing on a per-gene level, make_outlier_df_gene
+    #index: the number in the list given to the function by main_funcion
+        #here, the odd numbers indicate that we are looking for either only:
+            #genes with outliers of ONLY the specified intron type (as found in the folder name) OR
+            #junctions with ONLY outliers of the specified intron type (as found in the folder name)
+                #as opposed to, for example, junctions with outliers of ANY intron type in a gene containing at least one intron of 
+                    #the specified intron type (as found in the folder name)
+#OUTPUT:
+    #if looking on a per-gene basis:
+        #the output of get_genes_count_df AND make_outlier_df_gene
+    #if looking on a per-junction basis:
+        #the output of get_junctions_count_df
 
 change_colnames_bind_rows <- function(intron, MIDB_file, FRASER_results_filtered, FRASER_input, level, index, dir_path) {
     pro_ensg <- mean(startsWith(FRASER_results_filtered$hgncSymbol, "ENSG"), na.rm = TRUE)
