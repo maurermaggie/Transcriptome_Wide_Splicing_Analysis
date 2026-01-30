@@ -247,6 +247,48 @@ change_colnames_bind_rows <- function(intron, MIDB_file, FRASER_results_filtered
     
 }
 
+#################################----change_colnames_bind_rows----###########################################
+#INPUT: 
+    #filtered_FRASER_results: the results of FRASER given to the main function
+        #this should ALREADY be filtered for the padjust, deltaPsi, and type of your choice
+    #FRASER_input_files: a csv file with one column (labeled sampleID) where every row contains the sampleID assocaited with the bam file
+        #that was inputted in the FRASER pipeline
+    #minor_intron_file: the file from the MIDB database read in earlier via read_csv
+    #dir_path: the directory where you want all results saved
+    #FRASER_output_fp: the filepath where filtered_FRASER_results originates from
+        #this will be recorded in a readme
+    #FRASER_input_fp: the filepath where FRASER_input_files originates from
+        #this will be recorded in a readme
+    #MIG_fp: the filepath where minor_intron_file originates from
+        #this will be recorded in a readme
+#OUTPUT:
+    #output of get_junctions_count_df for all 6 intron types in the MIDB df (minor, minor_hybrid, major_hybrid, minor-like, major-like, and non-canonical): 
+        #csv with three columns:
+            #sampleID: the sampleID as found in the FRASER output
+            #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
+                #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
+                #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
+            #Z_score: the Z-score for that sample taken from the mean and sd of the n column
+    #output of get_genes_count_df for all 6 intron types in the MIDB df (minor, minor_hybrid, major_hybrid, minor-like, major-like, and non-canonical):
+        #a csv with three columns:
+            #sampleID: the sampleID as found in the FRASER output
+            #n: the number of genes containing outliers of the specified intron type (as found in the folder name) impacted by EITHER
+                #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+                #outliers of only the specified intron type (ex: number of genes with minor intron retention)
+            #Z_score: the Z-score for that sample taken from the mean and sd of the n column
+    #the output of make_outlier_df_gene for all 6 intron types in the MIDB df (minor, minor_hybrid, major_hybrid, minor-like, major-like, and non-canonical):
+         #a folder (unique_genes_per_sample) containing one file per sample named [sampleID].csv with two columns
+            #ensembl_gene_id: ENSG of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
+                #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+                #outliers of only the specified intron type (ex: number of genes with minor intron retention)
+            #hgnc_symbol: gene names of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
+                #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+                #outliers of only the specified intron type (ex: number of genes with minor intron retention)
+    #a readme containing:
+            #the date this was run
+            #filepath of MIDB file used
+            #filepath of the FRASER output used
+            #filepath of the FRASER input used
 
 main_function <- function(filtered_FRASER_results, FRASER_input_files, minor_intron_file, dir_path, FRASER_output_fp, FRASER_input_fp, MIG_fp) {
     ###############----Define all levels----##############
