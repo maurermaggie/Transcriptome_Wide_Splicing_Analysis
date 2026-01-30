@@ -68,20 +68,23 @@ convert_to_gene_names <- function(ensg_df) {
 
 ####################################----make_outlier_df_gene----############################################
 #INPUT: 
-    #filtered_tables: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
+    #filtered_table: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
         #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
         #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
             #with a start=inron_start+/-1 and an end=intron_end+/-1 where
             #start/end are from the FRASER output and
             #intron_start/intron_end are from the MIDB_database
-    #filepath: the filepath where you would like to save the csv output
+    #input_sid: a csv file with one column (labeled sampleID) where every row contains the sampleID assocaited with the bam file
+        #that was inputted in the FRASER pipeline
+    #dir_path: the directory name where the output will be saved under the "unique_genes_per_sample" folder
 #OUTPUT:
-    #a csv with three columns:
-        #sampleID: the sampleID as found in the FRASER output
-        #n: the number of genes containing outliers of the specified intron type (as found in the folder name) impacted by EITHER
+    #a folder (unique_genes_per_sample) containing one file per sample named [sampleID].csv with two columns
+        #ensembl_gene_id: ENSG of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
             #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
             #outliers of only the specified intron type (ex: number of genes with minor intron retention)
-        #Z_score: the Z-score for that sample taken from the mean and sd of the n column
+        #hgnc_symbol: gene names of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
+            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
 
 make_outlier_df_gene <- function(filtered_tables, filepath) {   
     if (!dir.exists(filepath)) {
@@ -112,7 +115,7 @@ make_outlier_df_gene <- function(filtered_tables, filepath) {
     }
 } 
 
-#################################----make_outlier_df_junction----###########################################
+####################################----get_genes_count_df----##############################################
 #INPUT: 
     #filtered_tables: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
         #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
@@ -124,50 +127,10 @@ make_outlier_df_gene <- function(filtered_tables, filepath) {
 #OUTPUT:
     #a csv with three columns:
         #sampleID: the sampleID as found in the FRASER output
-        #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
-            #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
-            #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
+        #n: the number of genes containing outliers of the specified intron type (as found in the folder name) impacted by EITHER
+            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
         #Z_score: the Z-score for that sample taken from the mean and sd of the n column
-
-make_outlier_df_junction <- function(filtered_tables, filepath) {  
-    if (!dir.exists(filepath)) {
-        dir.create(filepath, recursive = TRUE)
-    }
-
-    filenumber <- length(list.files(filepath))
-
-    ids_w_outliers <- filtered_tables$sampleID %>% unique
-    ids_w_outliers_count <- filtered_tables %>% pull(sampleID) %>% unique() %>% length()
-
-    if (filenumber < ids_w_outliers_count) {
-        for (i in ids_w_outliers) {
-            ind_junction_df_sample <- filtered_tables %>% filter(sampleID == i) %>% unique()
-            
-            filepath_sample <- paste0(filepath, "/", i, ".csv")
-            write_csv(ind_junction_df_sample, filepath_sample)
-        }
-    }
-}
-
-####################################----get_genes_count_df----##############################################
-#INPUT: 
-    #filtered_table: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
-        #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
-        #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
-            #with a start=inron_start+/-1 and an end=intron_end+/-1 where
-            #start/end are from the FRASER output and
-            #intron_start/intron_end are from the MIDB_database
-    #input_sid: a csv file with one column (labeled sampleID) where every row contains the sampleID assocaited with the bam file
-        #that was inputted in the FRASER pipeline
-    #dir_path: the directory name where the output will be saved under the "unique_genes_per_sample" folder
-#OUTPUT:
-    #a folder (unique_genes_per_sample) containing one file per sample named [sampleID].csv with two columns
-        #ensembl_gene_id: ENSG of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
-            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
-            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
-        #hgnc_symbol: gene names of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
-            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
-            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
 
 get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(level_name, "unique_gene_counts.csv")
@@ -182,6 +145,23 @@ get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) 
         count_joined_sdv
     }
 }
+
+#################################----get_junctions_count_df----##############################################
+#INPUT: 
+    #filtered_tables: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
+        #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
+        #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
+            #with a start=inron_start+/-1 and an end=intron_end+/-1 where
+            #start/end are from the FRASER output and
+            #intron_start/intron_end are from the MIDB_database
+    #filepath: the filepath where you would like to save the csv output
+#OUTPUT:
+    #a csv with three columns:
+        #sampleID: the sampleID as found in the FRASER output
+        #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
+            #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
+            #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
+        #Z_score: the Z-score for that sample taken from the mean and sd of the n column\
 
 get_junctions_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(level_name, "unique_junction_counts.csv")
@@ -240,7 +220,6 @@ change_colnames_bind_rows <- function(intron, MIDB_file, FRASER_results_filtered
         make_outlier_df_gene(FRASER_results_filtered, paste0(level, "unique_genes_per_sample"))
     } else {
         get_junctions_count_df(FRASER_results_filtered, FRASER_input, level, dir_path)
-        make_outlier_df_junction(FRASER_results_filtered, paste0(level, "unique_junctions_per_sample"))
     }
     
 }
