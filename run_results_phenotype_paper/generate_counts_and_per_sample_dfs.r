@@ -161,12 +161,13 @@ make_outlier_df_junction <- function(filtered_tables, filepath) {
         #that was inputted in the FRASER pipeline
     #dir_path: the directory name where the output will be saved under the "unique_genes_per_sample" folder
 #OUTPUT:
-    #a csv with three columns:
-        #sampleID: the sampleID as found in the FRASER output
-        #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
-            #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
-            #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
-        #Z_score: the Z-score for that sample taken from the mean and sd of the n column
+    #a folder (unique_genes_per_sample) containing one file per sample named [sampleID].csv with two columns
+        #ensembl_gene_id: ENSG of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
+            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
+        #hgnc_symbol: gene names of the gene containing the specified intron type (as found in the folder name) impacted by EITHER
+            #outliers of any intron type (ex: number of minor intron containing genes, or MIGs, with intron retention of any type)
+            #outliers of only the specified intron type (ex: number of genes with minor intron retention)
 
 get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(level_name, "unique_gene_counts.csv")
