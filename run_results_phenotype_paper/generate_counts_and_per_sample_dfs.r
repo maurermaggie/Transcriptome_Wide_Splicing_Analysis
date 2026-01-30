@@ -32,6 +32,11 @@ MIDB_all <- read_csv(MIDB_all_fp)
 ############################################################################################################
 
 ###################################----convert_to_gene_names----############################################
+#INPUT: 
+    #ensg_df: the filtered FRASER table given to make_outlier_df_gene from change_colnames_bind_rows from the main_function
+        #this table can be altered in change_colnames_bind_rows before being passed to make_outlier_df_gene to only include
+
+        #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
 #the fibroblast FRASER output from the Broad included ENSGs as its output in the hgncSymbol column INSTEAD of hgnc symbols/ gene names
     #so, this function converts ENSGs to hgnc symbols/ gene names
     #it is called in make_outlier_df_gene after checking if the rows in the hgncSymbol column contain the string "ENSG" > 50% of the time
