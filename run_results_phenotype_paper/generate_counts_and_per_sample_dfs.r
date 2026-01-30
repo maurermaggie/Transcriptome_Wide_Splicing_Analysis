@@ -32,14 +32,17 @@ MIDB_all <- read_csv(MIDB_all_fp)
 ############################################################################################################
 
 ###################################----convert_to_gene_names----############################################
+RATIONAL:
+    #the fibroblast FRASER output from the Broad included ENSGs as its output in the hgncSymbol column INSTEAD of hgnc symbols/ gene names
+        #so, this function converts ENSGs to hgnc symbols/ gene names
+        #it is called in make_outlier_df_gene after checking if the rows in the hgncSymbol column contain the string "ENSG" > 50% of the time
 #INPUT: 
     #ensg_df: the filtered FRASER table given to make_outlier_df_gene from change_colnames_bind_rows from the main_function
-        #this table can be altered in change_colnames_bind_rows before being passed to make_outlier_df_gene to only include
-
-        #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
-#the fibroblast FRASER output from the Broad included ENSGs as its output in the hgncSymbol column INSTEAD of hgnc symbols/ gene names
-    #so, this function converts ENSGs to hgnc symbols/ gene names
-    #it is called in make_outlier_df_gene after checking if the rows in the hgncSymbol column contain the string "ENSG" > 50% of the time
+        #this table is sometimes altered in change_colnames_bind_rows before being passed to make_outlier_df_gene to only include introns
+            #with a start=inron_start+/-1 and an end=intron_end+/-1 where
+            #start/end are from the FRASER output and
+            #intron_start/intron_end are from the MIDB_database
+#OUTPUT: the same dataframe given in the INPUT with the values in the "hgncSymbol" column changed from ENSG IDs to hgnc symbols/ gene names
 
 convert_to_gene_names <- function(ensg_df) {
     ensembl <- useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl")
@@ -145,6 +148,25 @@ make_outlier_df_junction <- function(filtered_tables, filepath) {
         }
     }
 }
+
+####################################----get_genes_count_df----##############################################
+#INPUT: 
+    #filtered_table: a filtered df created in chage_colnames_bind_rows OR a df given to main_function
+        #the df given to main_function is the FRASER output filtered on the padjust, deltaPsi, and type of your choice
+        #the df created in change_colnames_bind_rows is the df given to the main function after being filtered to only introns
+            #with a start=inron_start+/-1 and an end=intron_end+/-1 where
+            #start/end are from the FRASER output and
+            #intron_start/intron_end are from the MIDB_database
+    #input_sid: a csv file with one column (labeled sampleID) where every row contains the sampleID assocaited with the bam file
+        #that was inputted in the FRASER pipeline
+    #dir_path: the directory name where the output will be saved under the "unique_genes_per_sample" folder
+#OUTPUT:
+    #a csv with three columns:
+        #sampleID: the sampleID as found in the FRASER output
+        #n: the number of junctions with outliers of the specified intron type (as found in the folder name) which are EITHER
+            #outliers of any intron type (ex: number of intron retention events of any type within minor intron containing genes, or MIGs)
+            #outliers of only the specified intron type (ex: number of junctions with minor intron retention)
+        #Z_score: the Z-score for that sample taken from the mean and sd of the n column
 
 get_genes_count_df <- function(filtered_table, input_sid, level_name, dir_path) {
     count_output_fp <- paste0(level_name, "unique_gene_counts.csv")
