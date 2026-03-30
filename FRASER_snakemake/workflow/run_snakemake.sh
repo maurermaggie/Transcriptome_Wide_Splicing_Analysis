@@ -43,7 +43,7 @@ options_array=(
 
 longoptions=$(echo "${options_array[@]}" | sed -e 's/ /:,/g'):
 
-arguments=$(getopt --options a --longoptions "${longoptions}" --name 'MPRA pipeline' -- "$@")
+arguments=$(getopt --options a --longoptions "${longoptions}" --name 'FRASER pipeline' -- "$@")
 eval set -- "${arguments}"
 
 while true; do
