@@ -78,5 +78,5 @@ elif [ -z $profile ]; then
     echo "no profile selected"
     exit 1
 else 
-    micromamba run -n snakemake7 snakemake --configfile ${config_file} -c ${no_cores} --profile ${profile} --use-conda
+    snakemake --configfile ${config_file} -c ${no_cores} --profile ${profile} --use-conda
 fi
