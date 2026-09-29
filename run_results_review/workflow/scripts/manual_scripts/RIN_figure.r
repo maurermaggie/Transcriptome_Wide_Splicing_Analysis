@@ -5,7 +5,8 @@ library(ggrepel)
 library(tidyverse)
 
 ################-----rm batch 8-----#################
-joined <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/run_results_review/output/output_rm_seqbatch_8/DataFrames/metadata_counts_outlier_joined.csv")
+joined <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Arriaga_2025/run_results_review_cleaned_github/output/response_to_review2/DataFrames/metadata_counts_outlier_joined.csv") %>%
+            filter(RIN > 7)
 joined <- joined %>% select(sampleID, Theta_Genes_Outlier_Status, Jaccard_Genes_Outlier_Status, Psi3_Genes_Outlier_Status, Psi5_Genes_Outlier_Status, All_Genes_Outlier_Status, RIN)
 
 outlier <- joined %>% filter(Theta_Genes_Outlier_Status == 1 | Jaccard_Genes_Outlier_Status == 1 | Psi3_Genes_Outlier_Status == 1 | Psi5_Genes_Outlier_Status == 1 | All_Genes_Outlier_Status == 1)
@@ -28,4 +29,4 @@ RIN_boxplot <- ggplot(joined, aes(x = status, y = RIN)) +
     ylab("RIN") +
     xlab("Outlier Status")
 
-ggsave(filename="/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/run_results_review/output/output_rm_seqbatch_8/Plots/RIN/RIN.pdf", plot=RIN_boxplot,  limitsize = FALSE, units = "in", height=12, width=10)
+ggsave(filename="/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Arriaga_2025/run_results_review_cleaned_github/output/response_to_review2/Plots/RIN/RIN.pdf", plot=RIN_boxplot,  limitsize = FALSE, units = "in", height=12, width=10)

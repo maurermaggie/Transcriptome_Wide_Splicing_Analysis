@@ -1,4 +1,4 @@
-output_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER_snakemake_cleaned_github/data/test_output"
-input_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER_snakemake_cleaned_github/data/test_data"
-file_list: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER_snakemake_cleaned_github/config/test_input.csv"
+output_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/output/output_drafts/RNU4ATAC_paper_rm_12_6"
+input_directory: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/symlinked_data/RNU4ATAC_paper_rm_12_6"
+file_list: "/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/FRASER/FRASER_snakemake_cleaned_github/config/RNU4ATAC_paper_rm_12_6.csv"
 FRASER_type: "Both"

@@ -28,23 +28,23 @@ MIG_table_select <- MIG_table_select %>% filter(gene_class == "MIG") %>% pull(ge
 ########################################################################
 ###################-----All RNU4ATAC Upset Plot-----####################
 ########################################################################
-A1 <- all_uncompiled %>% filter(sampleID == "A1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+RD268 <- all_uncompiled %>% filter(sampleID == "RD268") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-B1 <- all_uncompiled %>% filter(sampleID == "B1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+GSS225379 <- all_uncompiled %>% filter(sampleID == "GSS225379") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-UDN550488 <- all_uncompiled %>% filter(sampleID == "C1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+UDN550488 <- all_uncompiled %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
-UDN238929 <- all_uncompiled %>% filter(sampleID == "C2") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+UDN238929 <- all_uncompiled %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
 
-gene_list <- c(A1, B1, UDN550488, UDN238929) %>% unique 
+gene_list <- c(RD268, GSS225379, UDN550488, UDN238929) %>% unique 
 genes <- data.frame(gene_list)
-genes$A1 <- ifelse(genes$gene_list %in% A1, TRUE, FALSE)
-genes$B1 <- ifelse(genes$gene_list %in% B1, TRUE, FALSE)
+genes$A1 <- ifelse(genes$gene_list %in% RD268, TRUE, FALSE)
+genes$B1 <- ifelse(genes$gene_list %in% GSS225379, TRUE, FALSE)
 genes$C1 <- ifelse(genes$gene_list %in% UDN550488, TRUE, FALSE)
 genes$C2 <- ifelse(genes$gene_list %in% UDN238929, TRUE, FALSE)
 rownames(genes) <- genes$gene_list
@@ -103,16 +103,16 @@ MS_tidy <- tidy(MS_f)
 MS_tidy
 }
 
-RD_GSS <- make_table(A1, B1)
-RD_sib1 <- make_table(A1, UDN550488)
-RD_sib2 <- make_table(A1, UDN238929)
+RD_GSS <- make_table(RD268, GSS225379)
+RD_sib1 <- make_table(RD268, UDN550488)
+RD_sib2 <- make_table(RD268, UDN238929)
 
-GSS_sib1 <- make_table(B1, UDN550488)
-GSS_sib2 <- make_table(B1, UDN238929)
+GSS_sib1 <- make_table(GSS225379, UDN550488)
+GSS_sib2 <- make_table(GSS225379, UDN238929)
 
 sib1_sib2 <- make_table(UDN550488, UDN238929)
 
-df <- data.frame(value=c("A1_B1", "A1_UDN550488", "A1_UDN238929", "B1_UDN550488", "B1_UDN238929", "UDN550488_UDN238929"),
+df <- data.frame(value=c("RD268_GSS225379", "RD268_UDN550488", "RD268_UDN238929", "GSS225379_UDN550488", "GSS225379_UDN238929", "UDN550488_UDN238929"),
                     pvalue=c(RD_GSS$p.value, RD_sib1$p.value, RD_sib2$p.value, GSS_sib1$p.value, GSS_sib2$p.value, sib1_sib2$p.value),
                     estimate=c(RD_GSS$estimate, RD_sib1$estimate, RD_sib2$estimate, GSS_sib1$estimate, GSS_sib2$estimate, sib1_sib2$estimate))
 df$q <- p.adjust(df$pvalue, method="fdr", n=length(df$pvalue))
@@ -122,8 +122,8 @@ write_csv(df, RNU4ATAC_fp)
 ########################################################################
 ##########-----RNU4ATAC vs RNU6ATAC Contingency Tables-----#############
 ########################################################################
-RNU4ATAC <- c(A1, B1, UDN550488, UDN238929) %>% unique
-RNU6ATAC <- all_uncompiled %>% filter(sampleID == "D1") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
+RNU4ATAC <- c(RD268, GSS225379, UDN550488, UDN238929) %>% unique
+RNU6ATAC <- all_uncompiled %>% filter(sampleID == "RD380") %>% filter(padjust < 0.05) %>% filter(abs(deltaPsi)>=0.3) %>% filter(type == "theta") %>% 
                     filter(hgncSymbol %in% MIG_table_select) %>%
                      pull(hgncSymbol) %>% unique
 RNU4ATAC_RNU6ATAC <- intersect(RNU4ATAC, RNU6ATAC) %>% length

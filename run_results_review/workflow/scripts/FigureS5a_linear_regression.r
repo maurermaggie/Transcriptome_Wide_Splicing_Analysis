@@ -7,7 +7,7 @@ library(tidyverse)
 
 args <- commandArgs(TRUE)
 joined_filtered_fp <- args[1]
-joined_filtered <- read_csv(joined_filtered_fp)
+joined_filtered <- read_csv(joined_filtered_fp) %>% filter(RIN > 7)
 All_05_stats <- args[2]
 Psi3_05_stats <- args[3]
 Psi5_05_stats <- args[4]
@@ -106,7 +106,7 @@ ggsave(filename=RIN_fp, plot=RIN_plot,  limitsize = FALSE, units = "in", height=
 Age_plot <- ggplot(joined_filtered,aes(age, All_Junctions)) + 
   geom_point(method='lm', formula= All_Junctions~age) +
   xlab("Age") +
-  ylab("Number of Significant Splicing Outliers") +
+  ylab("Number of Significant FRASER Splicing Outliers") +
   geom_smooth(method = "lm", se = FALSE)+
   theme_classic(base_size = 27)+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=4)) +
@@ -287,6 +287,37 @@ Esitmate$type <- "FRASER"
 Esitmate_j$type <- "FRASER2"
 
 Est <- bind_rows(Esitmate, Esitmate_j)
+Est$xmin <- Est$variance_explained - Est$std_error_percent
+Est$xmax <- Est$variance_explained + Est$std_error_percent
+
+x_min <- min(Est$xmin)
+x_max <- max(Est$xmax)
+
+find_next_multiple_of_5 <- function(n) {
+  n <- n + 1 
+  remainder <- n %% 5 
+  
+  if (remainder == 0) {
+    return(n) 
+  } else {
+    return(n + (5 - remainder))
+  }
+}
+
+x_max_5 <- find_next_multiple_of_5(x_max)
+
+find_next_lowest_multiple_of_5 <- function(n) {
+  n <- n - 1 
+  remainder <- n %% 5 
+  
+  if (remainder == 0) {
+    return(n) 
+  } else {
+    return(n - (5 + remainder))
+  }
+}
+
+x_min_5 <- find_next_lowest_multiple_of_5(x_min)
 
 print("ZZZZZZZZZZZZZZZZ8888888")
 
@@ -300,7 +331,7 @@ linear_variance_explained_junction <- ggplot(Est, aes(x= variance_explained, y=r
   geom_text(aes(label = ifelse(between(padjust, 0.001, 0.01), "**", 
                           ifelse(padjust < 0.001, "***", 
                             ifelse(padjust < 0.05, "*", "")))), 
-            position = position_dodge(width = .5), vjust = 2, size = 30 / .pt, angle= 90) +
+            position = position_dodge(width = .5), vjust = 3, size = 30 / .pt, angle= 90) +
   labs(title_lab=title)+
   xlab('Percent Variance Explained') +
   ylab('Metadata Values') +
@@ -311,7 +342,7 @@ linear_variance_explained_junction <- ggplot(Est, aes(x= variance_explained, y=r
   theme_bw(base_size = 25)+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_fill_manual(values = MyColors) + 
-  xlim(-10, 40)
+  xlim(x_min_5, x_max_5)
   
 linear_variance_explained_junction
 ggsave(filename=output_var_explained, plot=linear_variance_explained_junction,  limitsize = FALSE, units = "in", height=10, width=10)

@@ -1,0 +1,58 @@
+# Mirrors rsync_exclude_Transcriptome_wide.txt (+ local FRASER sample manifests below).
+# Note: rsync step 1 skips shared Oak legacy run_results_review/; this repo's
+# run_results_review/ is the cleaned GitHub workflow and is not ignored here.
+
+# --- version control / editor ---
+.DS_Store
+*~
+
+# --- workflow caches ---
+.snakemake/
+**/.snakemake/
+
+# --- logs (files and common log dirs) ---
+logs/
+Logs/
+*.log
+*.out
+*.err
+
+# --- documents / figures ---
+*.pdf
+*.png
+*.ps
+
+# --- sequencing / alignment ---
+*.bam
+*.bai
+*.cram
+*.crai
+*.sam
+*.fastq
+*.fq
+*.fastq.gz
+*.fq.gz
+
+# --- Arriaga_2025: top-level dirs (not synced into this repo) ---
+gregor-data-model/
+citations/
+notebooks/
+old_code/
+run_results_review_cleaned_github/
+
+# --- run_results_paper outputs ---
+run_results_paper/logs/
+run_results_paper/output/
+
+# --- workflow outputs (any pipeline) ---
+output/
+
+# --- FRASER_snakemake large/local inputs ---
+data/
+
+# --- Local FRASER sample manifests (paths on Oak; not for GitHub) ---
+FRASER_snakemake/config/RNU4ATAC_paper_rm_12_6.csv
+FRASER_snakemake/config/polyA_UG_Ultima.csv
+FRASER_snakemake/config/polyA_bulk_Ultima.csv
+FRASER_snakemake/config/symlink_blood_no_missing_rm_seqbatch_8.csv
+FRASER_snakemake/config/test_input.csv

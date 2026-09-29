@@ -43,7 +43,7 @@ options_array=(
 
 longoptions=$(echo "${options_array[@]}" | sed -e 's/ /:,/g'):
 
-arguments=$(getopt --options a --longoptions "${longoptions}" --name 'FRASER pipeline' -- "$@")
+arguments=$(getopt --options a --longoptions "${longoptions}" --name 'MPRA pipeline' -- "$@")
 eval set -- "${arguments}"
 
 while true; do
@@ -78,5 +78,5 @@ elif [ -z $profile ]; then
     echo "no profile selected"
     exit 1
 else 
-    snakemake --configfile ${config_file} -c ${no_cores} --profile ${profile} --use-conda
+    micromamba run -n snakemake7 snakemake --configfile ${config_file} -c ${no_cores} --profile ${profile} --use-conda
 fi

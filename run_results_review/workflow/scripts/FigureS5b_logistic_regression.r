@@ -6,7 +6,7 @@ library(tidyverse)
 
 args <- commandArgs(TRUE)
 joined_filtered_fp <- args[1]
-joined_filtered <- read_csv(joined_filtered_fp)
+joined_filtered <- read_csv(joined_filtered_fp) %>% filter(RIN > 7)
 
 All_05_stats <- args[2]
 Psi3_05_stats <- args[3]
@@ -103,6 +103,38 @@ Estimate_j$type <- "FRASER2"
 
 Est <- bind_rows(Estimate, Estimate_j)
 
+Est$xmin <- Est$variance_explained - Est$std_error
+Est$xmax <- Est$variance_explained + Est$std_error
+
+x_min <- min(Est$xmin)
+x_max <- max(Est$xmax)
+
+find_next_multiple_of_5 <- function(n) {
+  n <- n + 1 
+  remainder <- n %% 5 
+  
+  if (remainder == 0) {
+    return(n) 
+  } else {
+    return(n + (5 - remainder))
+  }
+}
+
+x_max_5 <- find_next_multiple_of_5(x_max)
+
+find_next_lowest_multiple_of_5 <- function(n) {
+  n <- n - 1 
+  remainder <- n %% 5 
+  
+  if (remainder == 0) {
+    return(n) 
+  } else {
+    return(n - (5 + remainder))
+  }
+}
+
+x_min_5 <- find_next_lowest_multiple_of_5(x_min)
+
 MyColors <- c("#D6BDBF", "#F2D177")
 names(MyColors) <- c("FRASER", "FRASER2")
 
@@ -123,7 +155,7 @@ logistical_variance_explained_junctions <- ggplot(Est, aes(fill = type, x= varia
   theme_bw(base_size = 25)+
   theme(plot.title = element_text(hjust = 0.5))+
   scale_fill_manual(values = MyColors)+
-  xlim(-10, 40)
+  xlim(x_min_5, x_max_5)
   
 logistical_variance_explained_junctions
 ggsave(filename=output_var_explained, plot=logistical_variance_explained_junctions,  limitsize = FALSE, units = "in", height=10, width=10)

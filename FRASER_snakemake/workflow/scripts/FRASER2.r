@@ -30,7 +30,7 @@ fds <- countRNAData(settings, recount = TRUE)
 fds <- calculatePSIValues(fds)
 
 fds_filtered <- filterExpressionAndVariability(fds, minExpressionInOneSample=20, minDeltaPsi=0.0, filter=TRUE)
-filename_filtered <- paste0(output_directory, "/FRASER_filtered.rds", sep="")
+filename_filtered <- paste0(output_directory, "/FRASER2_gene_information.rds", sep="")
 saveRDS(fds_filtered, filename_filtered)
 
 #you would think that these 6 commands could be parallelized, but if you do, you will have to save the data (which takes hours) and reload it after the
@@ -48,5 +48,5 @@ fds_fraser <- FRASER(fds_annotated, q=c(jaccard=jaccard_q))
 results_fraser2 <- results(fds_fraser, all=TRUE)
 results_df <- as.data.frame(results_fraser2)
 
-filename <- paste0(output_directory, "/FRASER_output.csv", sep="")
+filename <- paste0(output_directory, "/FRASER2_output.csv", sep="")
 write_csv(results_df, filename)

@@ -16,25 +16,25 @@ number_MIGs_affected_boxplot_psi3 <- args[5]
 number_MIGs_affected_boxplot_psi5 <- args[6]
 number_MIGs_affected_boxplot_jaccard <- args[7]
 
-stats_D1 <- args[8]
+stats_RD380 <- args[8]
 
 display.brewer.all
 pal <- c(brewer.pal(12, "Paired"), brewer.pal(3, "Dark2"))
 
 ################-----Number Minor Introns Retained-----#################
-joined_MS <- joined %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
+joined_MS <- joined %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 joined_MS$MS <- "RNU4ATAC-opathies"
 
-joined_non_MS <- joined %>% filter(! sampleID %in% c("A1", "B1", "C1", "C2"))
+joined_non_MS <- joined %>% filter(! sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 joined_non_MS$MS <- "All Other Samples"
 
 joined <- bind_rows(joined_MS, joined_non_MS)
 
-RNU4ATAC <- joined %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
+RNU4ATAC <- joined %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 RNU4ATAC$type <- "RNU4ATAC-opathy"
-RNU6ATAC <- joined %>% filter(sampleID %in% c("D1"))
+RNU6ATAC <- joined %>% filter(sampleID %in% c("RD380"))
 RNU6ATAC$type <- "RNU6ATAC-opathy"
-non_RNU6ATAC <- joined %>% filter(! sampleID %in% c("D1", "A1", "B1", "C1", "C2"))
+non_RNU6ATAC <- joined %>% filter(! sampleID %in% c("RD380", "RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 non_RNU6ATAC$type <- NA
 
 joined <- bind_rows(RNU6ATAC, non_RNU6ATAC) %>% bind_rows(RNU4ATAC)
@@ -113,42 +113,42 @@ ggsave(filename=number_MIGs_affected_boxplot_jaccard, plot=MIG_boxplot_jaccard, 
 
 ################-----Get Stats RNU6ATAC-----#################
 RNU6ATAC_filtered <- RNU6ATAC %>% select(sampleID, no_MIGs_with_theta_juncs, no_MIGs_with_psi3_juncs, no_MIGs_with_psi5_juncs, no_MIGs_with_jaccard_juncs)
-write_csv(RNU6ATAC_filtered, stats_D1)
+write_csv(RNU6ATAC_filtered, stats_RD380)
 
 ################-----Get Stats-----#################
-A1 <- joined %>% filter(sampleID == "A1") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
-A1_zscore <- A1/ sd(joined$no_MIGs_with_theta_juncs)
-A1_no <- joined %>% filter(sampleID == "A1") %>% pull(no_MIGs_with_theta_juncs)
+RD268 <- joined %>% filter(sampleID == "RD268") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
+RD268_zscore <- RD268/ sd(joined$no_MIGs_with_theta_juncs)
+RD268_no <- joined %>% filter(sampleID == "RD268") %>% pull(no_MIGs_with_theta_juncs)
 
-B1 <- joined %>% filter(sampleID == "B1") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
-B1_zscore <- B1/ sd(joined$no_MIGs_with_theta_juncs)
-B1_no <- joined %>% filter(sampleID == "B1") %>% pull(no_MIGs_with_theta_juncs)
+GSS225379 <- joined %>% filter(sampleID == "GSS225379") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
+GSS225379_zscore <- GSS225379/ sd(joined$no_MIGs_with_theta_juncs)
+GSS225379_no <- joined %>% filter(sampleID == "GSS225379") %>% pull(no_MIGs_with_theta_juncs)
 
-C1 <- joined %>% filter(sampleID == "C1") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
-C1_zscore <- C1/ sd(joined$no_MIGs_with_theta_juncs)
-C1_no <- joined %>% filter(sampleID == "C1") %>% pull(no_MIGs_with_theta_juncs)
+UDN550488.Aligned.sortedByCoord.out.bam <- joined %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
+UDN550488.Aligned.sortedByCoord.out.bam_zscore <- UDN550488.Aligned.sortedByCoord.out.bam/ sd(joined$no_MIGs_with_theta_juncs)
+UDN550488.Aligned.sortedByCoord.out.bam_no <- joined %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% pull(no_MIGs_with_theta_juncs)
 
-C2 <- joined %>% filter(sampleID == "C2") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
-C2_zscore <- C2/ sd(joined$no_MIGs_with_theta_juncs)
-C2_no <- joined %>% filter(sampleID == "C2") %>% pull(no_MIGs_with_theta_juncs)
+UDN238929.Aligned.sortedByCoord.out.bam <- joined %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
+UDN238929.Aligned.sortedByCoord.out.bam_zscore <- UDN238929.Aligned.sortedByCoord.out.bam/ sd(joined$no_MIGs_with_theta_juncs)
+UDN238929.Aligned.sortedByCoord.out.bam_no <- joined %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% pull(no_MIGs_with_theta_juncs)
 
-D1 <- joined %>% filter(sampleID == "D1") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
-D1_zscore <- D1/ sd(joined$no_MIGs_with_theta_juncs)
-D1_no <- joined %>% filter(sampleID == "D1") %>% pull(no_MIGs_with_theta_juncs)
+RD380 <- joined %>% filter(sampleID == "RD380") %>% pull(no_MIGs_with_theta_juncs) - mean(joined$no_MIGs_with_theta_juncs)
+RD380_zscore <- RD380/ sd(joined$no_MIGs_with_theta_juncs)
+RD380_no <- joined %>% filter(sampleID == "RD380") %>% pull(no_MIGs_with_theta_juncs)
 
-zscores <- data.frame(values=c("A1", "B1", "C1", "C2", "D1"),
-                      zscores_theta_in_MIGs=c(A1_zscore, B1_zscore, C1_zscore, C2_zscore, D1_zscore),
-                      number_theta_juncs_in_MIGs = c(A1_no, B1_no, C1_no, C1_no, D1_no))
+zscores <- data.frame(values=c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam", "RD380"),
+                      zscores_theta_in_MIGs=c(RD268_zscore, GSS225379_zscore, UDN550488.Aligned.sortedByCoord.out.bam_zscore, UDN238929.Aligned.sortedByCoord.out.bam_zscore, RD380_zscore),
+                      number_theta_juncs_in_MIGs = c(RD268_no, GSS225379_no, UDN550488.Aligned.sortedByCoord.out.bam_no, UDN238929.Aligned.sortedByCoord.out.bam_no, RD380_no))
 
 write_csv(zscores, number_MIGs_with_theta)
 
-RNU4ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
+RNU4ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 RNU4ATAC$type <- "RNU4ATAC-opathy"
-non_RNU4ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(! sampleID %in% c("A1", "B1", "C1", "C2"))
+non_RNU4ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(! sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 non_RNU4ATAC$type <- NA
-RNU6ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(sampleID %in% c("D1"))
+RNU6ATAC <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(sampleID %in% c("RD380"))
 RNU6ATAC$type <- "RNU6ATAC"
-non_MS <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(! sampleID %in% c("A1", "B1", "C1", "C2", "D1"))
+non_MS <- joined %>% arrange(desc(no_MIGs_with_theta_juncs)) %>% select(sampleID, no_MIGs_with_theta_juncs) %>% filter(! sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam", "RD380"))
 non_MS$type <- "Non Minor Spliceosome"
 
 RNU4ATAC_mean <- mean(RNU4ATAC$no_MIGs_with_theta_juncs)

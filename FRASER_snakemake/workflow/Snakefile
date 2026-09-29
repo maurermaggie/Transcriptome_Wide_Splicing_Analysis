@@ -93,7 +93,7 @@ rule run_FRASER:
     output:
         output_file = config["output_directory"] + "/FRASER1/FRASER_output.csv"
     resources:
-        mem = "512GB",
+        mem = "3TB",
         time = "102:00:00"
     conda:
         'fraser1'
@@ -116,7 +116,7 @@ rule run_FRASER2:
     output:
         output_file = config["output_directory"] + "/FRASER2/FRASER_output.csv"
     resources:
-        mem = "512GB",
+        mem = "1TB",
         time = "102:00:00"
     conda:
         'fraser2'

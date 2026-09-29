@@ -23,11 +23,11 @@ x_lab <- expression(atop("Samples Ordered by Number of",
 y_lab <- expression("Number of" ~ theta~  "Outlier Junctions in MIGs")
 joined$numbers <- rownames(joined)
 
-RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
+RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 RNU4ATAC$type <- "RNU4ATAC-opathy"
-RNU6ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("D1"))
+RNU6ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("RD380"))
 RNU6ATAC$type <- "RNU6ATAC-opathy"
-non_MS <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("D1", "A1", "B1", "C1", "C2"))
+non_MS <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("RD380", "RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 non_MS$type <- NA
 
 joined <- bind_rows(RNU4ATAC, RNU6ATAC, non_MS)
@@ -101,34 +101,34 @@ MIGs_RNU4ATAC
 ggsave(filename=geom_point_RNU4ATAC, plot=MIGs_RNU4ATAC,  limitsize = FALSE, units = "in", height=12, width=10)
 
 ################-----Get Stats-----#################
-RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("A1", "B1", "C1", "C2"))
+RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 RNU4ATAC$type <- "RNU4ATAC-opathy"
-non_RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("D1", "B1", "C1", "C2"))
+non_RNU4ATAC <- joined %>% arrange(desc(no_theta_juncs_in_MIGs)) %>% select(sampleID, no_theta_juncs_in_MIGs, numbers) %>% filter(! sampleID %in% c("RD380", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
 non_RNU4ATAC$type <- "non-RNU4ATAC"
 
-A1 <- joined %>% filter(sampleID == "A1") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
-A1_zscore <- A1/ sd(joined$no_theta_juncs_in_MIGs)
-A1_no <- joined %>% filter(sampleID == "A1") %>% pull(no_theta_juncs_in_MIGs)
+RD268 <- joined %>% filter(sampleID == "RD268") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
+RD268_zscore <- RD268/ sd(joined$no_theta_juncs_in_MIGs)
+RD268_no <- joined %>% filter(sampleID == "RD268") %>% pull(no_theta_juncs_in_MIGs)
 
-B1 <- joined %>% filter(sampleID == "B1") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
-B1_zscore <- B1/ sd(joined$no_theta_juncs_in_MIGs)
-B1_no <- joined %>% filter(sampleID == "B1") %>% pull(no_theta_juncs_in_MIGs)
+GSS225379 <- joined %>% filter(sampleID == "GSS225379") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
+GSS225379_zscore <- GSS225379/ sd(joined$no_theta_juncs_in_MIGs)
+GSS225379_no <- joined %>% filter(sampleID == "GSS225379") %>% pull(no_theta_juncs_in_MIGs)
 
-C1 <- joined %>% filter(sampleID == "C1") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
-C1_zscore <- C1/ sd(joined$no_theta_juncs_in_MIGs)
-C1_no <- joined %>% filter(sampleID == "C1") %>% pull(no_theta_juncs_in_MIGs)
+UDN550488.Aligned.sortedByCoord.out.bam <- joined %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
+UDN550488.Aligned.sortedByCoord.out.bam_zscore <- UDN550488.Aligned.sortedByCoord.out.bam/ sd(joined$no_theta_juncs_in_MIGs)
+UDN550488.Aligned.sortedByCoord.out.bam_no <- joined %>% filter(sampleID == "UDN550488.Aligned.sortedByCoord.out.bam") %>% pull(no_theta_juncs_in_MIGs)
 
-C2 <- joined %>% filter(sampleID == "C2") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
-C2_zscore <- C2/ sd(joined$no_theta_juncs_in_MIGs)
-C2_no <- joined %>% filter(sampleID == "C2") %>% pull(no_theta_juncs_in_MIGs)
+UDN238929.Aligned.sortedByCoord.out.bam <- joined %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
+UDN238929.Aligned.sortedByCoord.out.bam_zscore <- UDN238929.Aligned.sortedByCoord.out.bam/ sd(joined$no_theta_juncs_in_MIGs)
+UDN238929.Aligned.sortedByCoord.out.bam_no <- joined %>% filter(sampleID == "UDN238929.Aligned.sortedByCoord.out.bam") %>% pull(no_theta_juncs_in_MIGs)
 
-D1 <- joined %>% filter(sampleID == "D1") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
-D1_zscore <- D1/ sd(joined$no_theta_juncs_in_MIGs)
-D1_no <- joined %>% filter(sampleID == "D1") %>% pull(no_theta_juncs_in_MIGs)
+RD380 <- joined %>% filter(sampleID == "RD380") %>% pull(no_theta_juncs_in_MIGs) - mean(joined$no_theta_juncs_in_MIGs)
+RD380_zscore <- RD380/ sd(joined$no_theta_juncs_in_MIGs)
+RD380_no <- joined %>% filter(sampleID == "RD380") %>% pull(no_theta_juncs_in_MIGs)
 
-zscores <- data.frame(values=c("A1", "B1", "C1", "C2", "D1"),
-                      zscores_theta_in_MIGs=c(A1_zscore, B1_zscore, C1_zscore, C2_zscore, D1_zscore),
-                      number_theta_juncs_in_MIGs = c(A1_no, B1_no, C1_no, C1_no, D1_no))
+zscores <- data.frame(values=c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam", "RD380"),
+                      zscores_theta_in_MIGs=c(RD268_zscore, GSS225379_zscore, UDN550488.Aligned.sortedByCoord.out.bam_zscore, UDN238929.Aligned.sortedByCoord.out.bam_zscore, RD380_zscore),
+                      number_theta_juncs_in_MIGs = c(RD268_no, GSS225379_no, UDN550488.Aligned.sortedByCoord.out.bam_no, UDN238929.Aligned.sortedByCoord.out.bam_no, RD380_no))
 
 write_csv(zscores, number_theta_in_MIGs)
 

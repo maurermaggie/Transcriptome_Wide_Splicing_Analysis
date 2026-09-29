@@ -8,7 +8,7 @@ display.brewer.all
 pal <- c(brewer.pal(12, "Paired"), brewer.pal(3, "Dark2"))
 
 ################-----Filter and Add Group to Joined-----#################
-joined <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/run_results_review/output/output_rm_seqbatch_8/DataFrames/metadata_counts_outlier_joined.csv")
+joined <- read_csv("/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Arriaga_2025/run_results_review_cleaned_github/output/response_to_review2/DataFrames/metadata_counts_outlier_joined.csv")
 
 joined <- joined %>% select(sampleID, no_MIGs_with_theta_juncs, no_MIGs_with_psi3_juncs, no_MIGs_with_psi5_juncs, no_MIGs_with_jaccard_juncs)
 joined_MS <- joined %>% filter(sampleID %in% c("RD268", "GSS225379", "UDN550488.Aligned.sortedByCoord.out.bam", "UDN238929.Aligned.sortedByCoord.out.bam"))
@@ -55,7 +55,7 @@ MIG_boxplot <- ggplot(joined_long, aes(x = outlier_type, y = value, fill=code)) 
       geom_point(aes(4.2, 152), colour="black", show.legend=FALSE, size=3) +
       geom_point(aes(4.15, 198), colour="black", show.legend=FALSE, size=3)
 
-ggsave(filename="/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/run_results_review/output/rm_batch_8/Plots/Figure2/boxplox_RNU4ATAC.pdf", plot=MIG_boxplot,  limitsize = FALSE, units = "in", height=12, width=10)
+ggsave(filename="/home/maurertm/smontgom/shared/UDN/Analysis/Transcriptome_Wide_Splicing_Analysis/Arriaga_2025/run_results_review_cleaned_github/output/response_to_review2/Plots/Figure2/boxplox_RNU4ATAC.pdf", plot=MIG_boxplot,  limitsize = FALSE, units = "in", height=12, width=10)
 
 ################-----Get Stats RNU6ATAC-----#################
 RNU6ATAC_filtered <- RNU6ATAC %>% select(sampleID, no_MIGs_with_theta_juncs, no_MIGs_with_psi3_juncs, no_MIGs_with_psi5_juncs, no_MIGs_with_jaccard_juncs)
